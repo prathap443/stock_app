@@ -222,10 +222,11 @@ def get_price_history(symbol, period):
         return [{"error": f"Error processing {period} data for {symbol}: {str(e)}"}]
 
 def get_stock_info(symbol):
-    """Get basic stock info and current price with improved reliability"""
+    """Get detailed stock info including About and Key Statistics"""
     time.sleep(random.uniform(0.5, 1.5))  # Randomized delay to avoid rate limiting
     
     try:
+        # Fetch quote data
         url = f"https://query1.finance.yahoo.com/v7/finance/quote?symbols={symbol}"
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
@@ -234,8 +235,19 @@ def get_stock_info(symbol):
         response = requests.get(url, headers=headers, timeout=15)
         data = response.json()
         
-        if 'quoteResponse' in data and 'result' in data['quoteResponse'] and len(data['quoteResponse']['result']) > 0:
+        # Fetch additional details (summary profile)
+        profile_url = f"https://query1.finance.yahoo.com/v1/finance/quoteSummary/{symbol}?modules=summaryProfile,price,summaryDetail"
+        profile_response = requests.get(profile_url, headers=headers, timeout=15)
+        profile_data = profile_response.json()
+
+        if ('quoteResponse' in data and 'result' in data['quoteResponse'] and len(data['quoteResponse']['result']) > 0 and
+            'quoteSummary' in profile_data and 'result' in profile_data['quoteSummary'] and profile_data['quoteSummary']['result']):
             quote = data['quoteResponse']['result'][0]
+            summary = profile_data['quoteSummary']['result'][0]
+            profile = summary.get('summaryProfile', {})
+            price = summary.get('price', {})
+            summary_detail = summary.get('summaryDetail', {})
+
             return {
                 "symbol": symbol,
                 "name": quote.get('shortName', symbol),
@@ -244,7 +256,21 @@ def get_stock_info(symbol):
                 "industry": quote.get('industry', "Unknown"),
                 "market_cap": quote.get('marketCap', None),
                 "pe_ratio": quote.get('trailingPE', None),
-                "dividend_yield": quote.get('dividendYield', 0.0)
+                "dividend_yield": quote.get('dividendYield', 0.0),
+                # About Section
+                "about": profile.get('longBusinessSummary', 'No description available.'),
+                "ceo": profile.get('ceo', 'N/A'),  # Not directly available, may need scraping or another API
+                "employees": profile.get('fullTimeEmployees', 'N/A'),
+                "headquarters": f"{profile.get('city', 'N/A')}, {profile.get('state', 'N/A')}" if profile.get('city') else 'N/A',
+                "founded": profile.get('founded', 'N/A'),  # Not directly available, may need scraping
+                # Key Statistics
+                "avg_volume": summary_detail.get('averageVolume', None),
+                "high_today": quote.get('regularMarketDayHigh', None),
+                "low_today": quote.get('regularMarketDayLow', None),
+                "open_price": quote.get('regularMarketOpen', None),
+                "volume": quote.get('regularMarketVolume', None),
+                "week_52_high": summary_detail.get('fiftyTwoWeekHigh', None),
+                "week_52_low": summary_detail.get('fiftyTwoWeekLow', None)
             }
         else:
             return get_stock_info_by_scraping(symbol)
@@ -296,8 +322,21 @@ def get_stock_info_by_scraping(symbol):
             "current_price": price,
             "sector": SECTOR_MAPPING.get(symbol, "Unknown"),
             "industry": "Unknown",
+            "market_cap": None,
             "pe_ratio": None,
-            "dividend_yield": 0.0
+            "dividend_yield": 0.0,
+            "about": "No description available.",
+            "ceo": "N/A",
+            "employees": "N/A",
+            "headquarters": "N/A",
+            "founded": "N/A",
+            "avg_volume": None,
+            "high_today": None,
+            "low_today": None,
+            "open_price": None,
+            "volume": None,
+            "week_52_high": None,
+            "week_52_low": None
         }
     except Exception as e:
         logger.error(f"Error scraping info for {symbol}: {str(e)}")
@@ -306,8 +345,22 @@ def get_stock_info_by_scraping(symbol):
             "name": symbol,
             "current_price": None,
             "sector": SECTOR_MAPPING.get(symbol, "Unknown"),
+            "industry": "Unknown",
+            "market_cap": None,
             "pe_ratio": None,
-            "dividend_yield": 0.0
+            "dividend_yield": 0.0,
+            "about": "No description available.",
+            "ceo": "N/A",
+            "employees": "N/A",
+            "headquarters": "N/A",
+            "founded": "N/A",
+            "avg_volume": None,
+            "high_today": None,
+            "low_today": None,
+            "open_price": None,
+            "volume": None,
+            "week_52_high": None,
+            "week_52_low": None
         }
 
 def get_historical_data(symbol, days=60):
