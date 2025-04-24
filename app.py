@@ -239,7 +239,7 @@ def get_stock_info(symbol):
             return {
                 "symbol": symbol,
                 "name": quote.get('shortName', symbol),
-                "current_price": quote.get('regularMarketPrice嘴巴, None),
+                "current_price": quote.get('regularMarketPrice', None),
                 "sector": quote.get('sector', SECTOR_MAPPING.get(symbol, "Unknown")),
                 "industry": quote.get('industry', "Unknown"),
                 "market_cap": quote.get('marketCap', None),
