@@ -1,4 +1,31 @@
-/* Define theme variables */
+/* Live Prediction */
+#livePrediction {
+  margin-top: 8px;
+  font-size: 0.85rem;
+}
+
+.prediction-result {
+  background-color: rgba(0, 0, 0, 0.02);
+  border-radius: 6px;
+  padding: 10px;
+  margin-top: 5px;
+}
+
+.prediction-label {
+  font-weight: 600;
+}
+
+.prediction-buy {
+  color: #34C759;
+}
+
+.prediction-hold {
+  color: #FF9500;
+}
+
+.prediction-sell {
+  color: #FF3B30;
+}/* Define theme variables */
 :root {
   --bg-color: #f8f9fc;
   --card-bg: #ffffff;
@@ -11,6 +38,278 @@
   --buy-gradient: linear-gradient(145deg, #34C759, #1A7431);
   --hold-gradient: linear-gradient(145deg, #FF9500, #CC4D00);
   --sell-gradient: linear-gradient(145deg, #FF3B30, #A61C1C);
+}
+
+.card-body {
+  padding: 15px;
+  flex-grow: 1;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 15px;
+}
+
+.current-price {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.change {
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.text-success {
+  color: #34C759 !important;
+}
+
+.text-danger {
+  color: #FF3B30 !important;
+}
+
+.chart-container {
+  margin: 10px 0;
+  height: 120px;
+  position: relative;
+  background-color: rgba(0, 0, 0, 0.02);
+  border-radius: 4px;
+  padding: 5px;
+}
+
+.time-period-btn {
+  font-size: 0.8rem;
+  padding: 2px 8px;
+  margin-right: 2px;
+  border-radius: 4px;
+}
+
+.time-period-btn.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.sentiment-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-size: 0.85rem;
+}
+
+.sentiment-label {
+  color: var(--muted-color);
+}
+
+.card-footer {
+  padding: 12px 15px;
+  background-color: rgba(0, 0, 0, 0.02);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sector-badge {
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  color: var(--muted-color);
+}
+
+.get-prediction-btn {
+  background-color: #00B1FF;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.get-prediction-btn:hover {
+  background-color: #009BE3;
+  transform: translateY(-2px);
+}
+
+/* Animation */
+.fade-in {
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Stock Detail Modal */
+.modal-content {
+  background: var(--card-bg);
+  color: var(--text-color);
+  border-radius: 16px;
+  border: none;
+  box-shadow: var(--card-shadow);
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--border-color);
+  padding: 1.25rem 1.5rem;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-footer {
+  border-top: 1px solid var(--border-color);
+  padding: 1.25rem 1.5rem;
+}
+
+.stats-container {
+  background-color: rgba(0, 0, 0, 0.02);
+  border-radius: 12px;
+  padding: 20px;
+  height: 100%;
+}
+
+.price-container {
+  margin: 15px 0;
+}
+
+.detail-price {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-right: 10px;
+}
+
+.detail-change {
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.stat-item {
+  background-color: var(--card-bg);
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.prediction-container {
+  background-color: var(--card-bg);
+  border-radius: 10px;
+  padding: 15px;
+  border: 1px solid var(--border-color);
+  margin-top: 10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.prediction-badge {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  color: white;
+}
+
+.prediction-buy {
+  background-color: #34C759;
+}
+
+.prediction-hold {
+  background-color: #FF9500;
+}
+
+.prediction-sell {
+  background-color: #FF3B30;
+}
+
+.prediction-details {
+  flex-grow: 1;
+}
+
+.news-container {
+  margin-top: 15px;
+}
+
+.news-item {
+  padding: 15px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.news-item:last-child {
+  border-bottom: none;
+}
+
+.news-item h6 {
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.news-item a {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.news-item a:hover {
+  text-decoration: underline;
+  color: #007bff;
+}
+
+.period-selector {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.period-selector .btn {
+  min-width: 50px;
+}
+
+/* Form Controls */
+.form-control {
+  height: 45px;
+  border-radius: 8px;
+  border-color: var(--border-color);
+  background-color: var(--card-bg);
+  color: var(--text-color);
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.15);
+}
+
+.btn {
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .modal-body {
+    padding: 1rem;
+  }
 }
 
 [data-theme="dark"] {
@@ -55,47 +354,51 @@ body {
 
 /* Recommendation Boxes */
 .recommendation-box {
-  border-radius: 12px;
+  border-radius: 8px;
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
   cursor: pointer;
-  box-shadow: var(--card-shadow);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 20px 15px;
+  height: 100%;
 }
 
 .recommendation-box h5 {
   font-weight: 600;
   margin-bottom: 5px;
+  font-size: 1.5rem;
 }
 
 .recommendation-box h3 {
   font-weight: 700;
   margin: 0;
+  font-size: 2.5rem;
 }
 
 .buy-box {
-  background: var(--buy-gradient);
+  background: linear-gradient(145deg, #34C759, #1A7431);
   color: white;
 }
 
 .hold-box {
-  background: var(--hold-gradient);
+  background: linear-gradient(145deg, #FF9500, #CC4D00);
   color: white;
 }
 
 .sell-box {
-  background: var(--sell-gradient);
+  background: linear-gradient(145deg, #FF3B30, #A61C1C);
   color: white;
 }
 
 .recommendation-box:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .recommendation-box.active {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-  border: 2px solid white;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.7);
 }
 
 /* Search and Filter */
@@ -136,7 +439,7 @@ body {
 /* Stock Cards */
 .stock-card {
   background: var(--card-bg);
-  border-radius: 16px;
+  border-radius: 12px;
   overflow: hidden;
   box-shadow: var(--card-shadow);
   transition: all 0.3s ease;
@@ -145,6 +448,7 @@ body {
   border: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
+  margin-bottom: 15px;
 }
 
 .stock-card:hover {
@@ -176,9 +480,17 @@ body {
   font-size: 0.75rem;
 }
 
-.bg-success {
+.bg-success, .buy-recommendation {
   background-color: #34C759 !important;
+  color: white;
 }
 
-.bg-warning {
-  background-color: #FF9
+.bg-warning, .hold-recommendation {
+  background-color: #FF9500 !important;
+  color: white;
+}
+
+.bg-danger, .sell-recommendation {
+  background-color: #FF3B30 !important;
+  color: white;
+}
