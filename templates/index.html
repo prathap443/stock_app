@@ -1,269 +1,424 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Analytics - Prathap's Analysis</title>
-    <link rel="stylesheet" href="/static/styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8" />
+  <title>Stock Analytics - Prathap's Analysis</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Stock Analytics - Prathap's Analysis</h1>
-            <p>Real-time analysis of top market performers</p>
-            <p id="last-updated">Last updated: <span id="last-updated-time"></span></p>
-        </header>
-
-        <!-- Scrolling News Ticker -->
-        <div class="news-ticker">
-            <div id="news-ticker-content">
-                <!-- News items will be populated by JavaScript -->
-            </div>
-        </div>
-
-        <!-- Summary Section -->
-        <div class="summary">
-            <div class="summary-item buy">
-                <h3>BUY</h3>
-                <p id="buy-count">0</p>
-            </div>
-            <div class="summary-item hold">
-                <h3>HOLD</h3>
-                <p id="hold-count">0</p>
-            </div>
-            <div class="summary-item sell">
-                <h3>SELL</h3>
-                <p id="sell-count">0</p>
-            </div>
-        </div>
-
-        <!-- Filters -->
-        <div class="filters">
-            <input type="text" id="search" placeholder="Search stocks...">
-            <select id="sector-filter">
-                <option value="">All Sectors</option>
-                <option value="Technology">Technology</option>
-                <option value="Finance">Finance</option>
-                <option value="Consumer Goods">Consumer Goods</option>
-                <option value="Entertainment">Entertainment</option>
-                <option value="Financial Services">Financial Services</option>
-                <option value="Aerospace">Aerospace</option>
-                <option value="Healthcare">Healthcare</option>
-                <option value="Energy">Energy</option>
-            </select>
-            <button onclick="resetFilters()">Reset Filters</button>
-            <button onclick="refreshData()" class="refresh-btn">Refresh</button>
-        </div>
-
-        <!-- Stock Cards -->
-        <div class="stock-grid" id="stock-grid"></div>
+  <div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="display-5 mb-1">📈 Stock Analytics - Prathap's Analysis</h1>
+        <p class="text-muted">Real-time analysis of top market performers</p>
+        <div class="text-end small text-muted" id="lastUpdated"></div>
+      </div>
+      <button class="btn btn-outline-secondary" onclick="toggleTheme()">🌓 Toggle Theme</button>
     </div>
 
-    <script>
-        let stocksData = [];
-        let allNews = [];
+    <div class="row text-center mb-2">
+      <div class="col-md-4">
+        <div id="buyBox" class="p-3 buy-box rounded recommendation-box" onclick="filterByRecommendation('BUY')">
+          <h5>BUY</h5>
+          <h3 id="buyCount">0</h3>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div id="holdBox" class="p-3 hold-box rounded recommendation-box" onclick="filterByRecommendation('HOLD')">
+          <h5>HOLD</h5>
+          <h3 id="holdCount">0</h3>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div id="sellBox" class="p-3 sell-box rounded recommendation-box" onclick="filterByRecommendation('SELL')">
+          <h5>SELL</h5>
+          <h3 id="sellCount">0</h3>
+        </div>
+      </div>
+    </div>
+    <div class="row text-center mb-4">
+      <div class="col-12">
+        <button id="resetFilters" class="btn btn-secondary btn-sm">Reset Filters</button>
+      </div>
+    </div>
 
-        // Fetch stock data
-        async function fetchStockData() {
-            try {
-                const response = await fetch('/api/stocks');
-                const data = await response.json();
-                if (data.error) {
-                    alert('Error fetching stock data: ' + data.error);
-                    return;
+    <div class="row g-3 mb-4 fade-in">
+      <div class="col-md-4">
+        <input type="text" class="form-control" placeholder="🔍 Search stocks..." id="stockSearch" />
+      </div>
+      <div class="col-md-4">
+        <select class="form-select" id="sectorFilter">
+          <option value="">All Sectors</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <button id="refreshBtn" class="btn btn-primary w-100">🔄 Refresh</button>
+      </div>
+    </div>
+
+    <div id="dashboardContent" class="row g-4"></div>
+  </div>
+
+  <!-- Modal for Expanded Chart -->
+  <div class="modal fade" id="chartModal" tabindex="-1" aria-labelledby="chartModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="chartModalLabel">Expanded Chart</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <canvas id="modalChart" height="400"></canvas>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for News Articles -->
+  <div class="modal fade" id="newsModal" tabindex="-1" aria-labelledby="newsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="newsModalLabel">Recent News</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="newsModalBody">
+          <p>Loading news...</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    let allStocks = [];
+    let selectedRecommendation = '';
+    let selectedTimePeriods = {};
+
+    async function loadDashboard() {
+      try {
+        const response = await fetch('/api/stocks?t=' + Date.now());
+        const data = await response.json();
+        if (data && data.stocks) {
+          allStocks = data.stocks;
+          document.getElementById("dashboardContent").innerHTML = '';
+          renderCounts(data.summary);
+          renderStocks(allStocks);
+          populateSectorFilter(allStocks);
+          document.getElementById("lastUpdated").innerText = `Last updated: ${data.last_updated}`;
+        } else {
+          document.getElementById("dashboardContent").innerHTML = '<p class="text-danger">No data available.</p>';
+        }
+      } catch (error) {
+        document.getElementById("dashboardContent").innerHTML = `<p class="text-danger">Error loading data: ${error}</p>`;
+      }
+    }
+
+    function renderCounts(summary) {
+      document.getElementById("buyCount").innerText = summary.BUY || 0;
+      document.getElementById("holdCount").innerText = summary.HOLD || 0;
+      document.getElementById("sellCount").innerText = summary.SELL || 0;
+    }
+
+    function renderStocks(stocks) {
+      let html = '';
+      stocks.forEach((stock, i) => {
+        const trendColor = stock.percent_change_2w >= 0 ? 'text-success' : 'text-danger';
+        const trendIcon = stock.percent_change_2w >= 0 ? '↑' : '↓';
+        const chartId = `chart-${i}`;
+        const buttonGroupId = `timePeriod-${i}`;
+        html += `
+          <div class="col-md-6 col-lg-4">
+            <div class="stock-card">
+              <div class="mb-2 d-flex justify-content-between">
+                <div>
+                  <h5>${stock.symbol}</h5>
+                  <small class="text-muted">Yahoo Finance</small><br/>
+                  <strong>$${stock.current_price?.toFixed(2) || 'N/A'}</strong><br/>
+                  <span class="text-muted small">Sentiment: ${stock.news_sentiment !== undefined ? stock.news_sentiment.toFixed(3) : 'N/A'}</span>
+                </div>
+                <div class="text-end ${trendColor}">
+                  <strong>${trendIcon}${stock.percent_change_2w.toFixed(2)}%</strong><br/>
+                  <small>${stock.recommendation}</small>
+                </div>
+              </div>
+              <div class="btn-group btn-group-sm mb-2" role="group" id="${buttonGroupId}">
+                <button type="button" class="btn btn-outline-secondary time-period-btn" onclick="updateChart('${stock.symbol}', '1D', ${i}, this)">1D</button>
+                <button type="button" class="btn btn-outline-secondary time-period-btn expand-icon" onclick="expandChart('${stock.symbol}', ${i})">🔍</button>
+                <button type="button" class="btn btn-outline-secondary time-period-btn" onclick="updateChart('${stock.symbol}', '1W', ${i}, this)">1W</button>
+                <button type="button" class="btn btn-outline-secondary time-period-btn" onclick="updateChart('${stock.symbol}', '1M', ${i}, this)">1M</button>
+              </div>
+              <div id="chartContainer-${i}">
+                <canvas id="${chartId}" height="100"></canvas>
+              </div>
+              <div class="mt-2 d-flex justify-content-between">
+                <button class="btn btn-sm btn-info" onclick="getLivePrediction('${stock.symbol}', ${i})">Get Live Prediction</button>
+                <button class="btn btn-sm btn-secondary" onclick="showNews('${stock.symbol}')">View News</button>
+              </div>
+              <div id="livePrediction-${i}" class="small mt-1"></div>
+            </div>
+          </div>`;
+      });
+      document.getElementById("dashboardContent").innerHTML = html;
+      stocks.forEach((stock, i) => {
+        const period = selectedTimePeriods[stock.symbol] || '14D';
+        updateChart(stock.symbol, period, i);
+      });
+    }
+
+    async function updateChart(symbol, period, index, button) {
+      try {
+        selectedTimePeriods[symbol] = period;
+        const buttonGroup = button ? button.parentElement : document.getElementById(`timePeriod-${index}`);
+        buttonGroup.querySelectorAll('.time-period-btn').forEach(btn => btn.classList.remove('active'));
+        if (button) {
+          button.classList.add('active');
+        }
+
+        const response = await fetch(`/api/stock_history/${symbol}/${period}`);
+        const historyData = await response.json();
+        const chartContainer = document.getElementById(`chartContainer-${index}`);
+        if (historyData && historyData.length > 0) {
+          if (historyData[0].error) {
+            chartContainer.innerHTML = `<p class="small text-muted">${historyData[0].error}</p>`;
+          } else {
+            chartContainer.innerHTML = `<canvas id="chart-${index}" height="100"></canvas>`;
+            renderStockChart(`chart-${index}`, historyData, period);
+          }
+        } else {
+          chartContainer.innerHTML = `<p class="small text-muted">No data available for ${period}.</p>`;
+        }
+      } catch (error) {
+        console.error(`Error updating chart for ${symbol}:`, error);
+        document.getElementById(`chartContainer-${index}`).innerHTML = `<p class="small text-muted">Error loading chart: ${error}</p>`;
+      }
+    }
+
+    async function expandChart(symbol, index) {
+      try {
+        const response = await fetch(`/api/stock_history/${symbol}/1D`);
+        const historyData = await response.json();
+
+        if (historyData && historyData.length > 0 && !historyData[0].error) {
+          document.getElementById('chartModalLabel').innerText = `${symbol} - 1D Chart (Intraday)`;
+          const modalCanvas = document.getElementById('modalChart');
+          const ctx = modalCanvas.getContext('2d');
+          if (ctx.chart) {
+            ctx.chart.destroy();
+          }
+          renderStockChart('modalChart', historyData, '1D');
+          const chartModal = new bootstrap.Modal(document.getElementById('chartModal'));
+          chartModal.show();
+        } else {
+          alert('No 1D data available to display in expanded view.');
+        }
+      } catch (error) {
+        console.error(`Error expanding chart for ${symbol}:`, error);
+        alert('Error loading expanded chart: ' + error);
+      }
+    }
+
+    function renderStockChart(canvasId, historyData, period) {
+      const ctx = document.getElementById(canvasId).getContext('2d');
+      if (ctx.chart) {
+        ctx.chart.destroy();
+      }
+      const dates = historyData.map(item => item.date);
+      const prices = historyData.map(item => item.close);
+      const isIntraday = period === '1D';
+      ctx.chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: dates,
+          datasets: [{
+            label: 'Price',
+            data: prices,
+            borderColor: 'rgba(75, 192, 192, 1)',
+            tension: 0.2,
+            fill: false
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            x: {
+              ticks: {
+                maxTicksLimit: isIntraday ? 8 : 5,
+                autoSkip: true,
+                callback: function(value, index, values) {
+                  if (isIntraday) {
+                    const date = new Date(dates[index]);
+                    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                  } else {
+                    const date = new Date(dates[index]);
+                    return date.toLocaleDateString('en-US', { month: 'short', day: '2-digit' });
+                  }
                 }
-                stocksData = data.stocks;
-                updateSummary(data.summary);
-                document.getElementById('last-updated-time').textContent = data.last_updated;
-                fetchNewsForAllStocks();
-                renderStocks(stocksData);
-            } catch (error) {
-                console.error('Error fetching stock data:', error);
+              }
+            },
+            y: {
+              display: canvasId !== 'modalChart',
+              beginAtZero: false
             }
+          }
+        }
+      });
+    }
+
+    async function getLivePrediction(symbol, index) {
+      try {
+        const response = await fetch(`/api/live_prediction/${symbol}`);
+        const data = await response.json();
+        if (data.error) {
+          document.getElementById(`livePrediction-${index}`).innerText = `Error: ${data.error}`;
+          return;
+        }
+        const trendColor = data.percent_change_today >= 0 ? 'text-success' : 'text-danger';
+        const trendIcon = data.percent_change_today >= 0 ? '↑' : '↓';
+        document.getElementById(`livePrediction-${index}`).innerHTML = `
+          <strong>Live Prediction: ${data.recommendation}</strong><br/>
+          <span class="${trendColor}">${trendIcon}${data.percent_change_today.toFixed(2)}% today</span><br/>
+          RSI: ${data.technical_indicators.rsi}, MACD: ${data.technical_indicators.macd}<br/>
+          Updated: ${data.last_updated}
+        `;
+      } catch (error) {
+        document.getElementById(`livePrediction-${index}`).innerText = `Error fetching live prediction: ${error}`;
+      }
+    }
+
+    async function showNews(symbol) {
+      try {
+        const response = await fetch(`/api/stock_news/${symbol}`);
+        const articles = await response.json();
+        const newsModalBody = document.getElementById('newsModalBody');
+        document.getElementById('newsModalLabel').innerText = `Recent News for ${symbol}`;
+
+        if (articles.error) {
+          newsModalBody.innerHTML = `<p class="text-danger">${articles.error}</p>`;
+        } else if (articles.length === 0) {
+          newsModalBody.innerHTML = `<p class="text-muted">No recent news articles available.</p>`;
+        } else {
+          let newsHtml = '<ul class="list-group">';
+          articles.forEach(article => {
+            newsHtml += `
+              <li class="list-group-item">
+                <h6><a href="${article.link}" target="_blank">${article.title}</a></h6>
+                <p class="small text-muted">Published by ${article.publisher} on ${article.published_at}</p>
+              </li>`;
+          });
+          newsHtml += '</ul>';
+          newsModalBody.innerHTML = newsHtml;
         }
 
-        // Fetch news for all stocks and populate the ticker
-        async function fetchNewsForAllStocks() {
-            allNews = [];
-            for (const stock of stocksData) {
-                try {
-                    const response = await fetch(`/api/stock_news/${stock.symbol}`);
-                    const news = await response.json();
-                    if (news && !news.error) {
-                        news.forEach(article => {
-                            allNews.push(`${stock.symbol}: ${article.title} (${article.publisher})`);
-                        });
-                    }
-                } catch (error) {
-                    console.error(`Error fetching news for ${stock.symbol}:`, error);
-                }
-            }
-            displayNewsTicker();
+        const newsModal = new bootstrap.Modal(document.getElementById('newsModal'));
+        newsModal.show();
+      } catch (error) {
+        console.error(`Error fetching news for ${symbol}:`, error);
+        document.getElementById('newsModalBody').innerHTML = `<p class="text-danger">Error loading news: ${error}</p>`;
+        const newsModal = new bootstrap.Modal(document.getElementById('newsModal'));
+        newsModal.show();
+      }
+    }
+
+    function populateSectorFilter(stocks) {
+      const sectorFilter = document.getElementById("sectorFilter");
+      const sectors = [...new Set(stocks.map(stock => stock.sector))].sort();
+      sectors.forEach(sector => {
+        const option = document.createElement("option");
+        option.value = sector;
+        option.textContent = sector;
+        sectorFilter.appendChild(option);
+      });
+    }
+
+    function filterStocks() {
+      const searchTerm = document.getElementById("stockSearch").value.toLowerCase();
+      const selectedSector = document.getElementById("sectorFilter").value;
+      const filteredStocks = allStocks.filter(stock => {
+        const matchesSearch = stock.symbol.toLowerCase().includes(searchTerm) || 
+                             (stock.name && stock.name.toLowerCase().includes(searchTerm));
+        const matchesSector = !selectedSector || stock.sector === selectedSector;
+        const matchesRecommendation = !selectedRecommendation || stock.recommendation === selectedRecommendation;
+        return matchesSearch && matchesSector && matchesRecommendation;
+      });
+      renderStocks(filteredStocks);
+    }
+
+    function filterByRecommendation(recommendation) {
+      if (selectedRecommendation === recommendation) {
+        selectedRecommendation = '';
+      } else {
+        selectedRecommendation = recommendation;
+      }
+      document.querySelectorAll('.recommendation-box').forEach(box => {
+        box.classList.remove('active');
+      });
+      if (selectedRecommendation) {
+        document.getElementById(`${selectedRecommendation.toLowerCase()}Box`).classList.add('active');
+      }
+      filterStocks();
+    }
+
+    function resetFilters() {
+      selectedRecommendation = '';
+      selectedTimePeriods = {};
+      document.getElementById("stockSearch").value = '';
+      document.getElementById("sectorFilter").value = '';
+      document.querySelectorAll('.recommendation-box').forEach(box => {
+        box.classList.remove('active');
+      });
+      filterStocks();
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme') || 'light';
+      const newTheme = current === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const saved = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', saved);
+      loadDashboard();
+      document.getElementById("stockSearch").addEventListener("input", filterStocks);
+      document.getElementById("sectorFilter").addEventListener("change", filterStocks);
+      document.getElementById("resetFilters").addEventListener("click", resetFilters);
+    });
+
+    document.getElementById("refreshBtn").addEventListener("click", async () => {
+      document.getElementById("refreshBtn").innerText = "Refreshing...";
+      try {
+        const res = await fetch('/api/refresh', { method: 'POST' });
+        const json = await res.json();
+        if (json.success) {
+          selectedRecommendation = '';
+          selectedTimePeriods = {};
+          document.querySelectorAll('.recommendation-box').forEach(box => {
+            box.classList.remove('active');
+          });
+          await loadDashboard();
+        } else {
+          alert("Refresh failed: " + json.error);
         }
-
-        // Display news ticker
-        function displayNewsTicker() {
-            const tickerContent = document.getElementById('news-ticker-content');
-            tickerContent.innerHTML = '';
-            if (allNews.length === 0) {
-                tickerContent.textContent = 'No news available.';
-                return;
-            }
-            allNews.forEach((newsItem, index) => {
-                const span = document.createElement('span');
-                span.textContent = newsItem;
-                span.classList.add('news-item');
-                span.id = `news-item-${index}`;
-                tickerContent.appendChild(span);
-            });
-        }
-
-        // Update summary section
-        function updateSummary(summary) {
-            document.getElementById('buy-count').textContent = summary.BUY;
-            document.getElementById('hold-count').textContent = summary.HOLD;
-            document.getElementById('sell-count').textContent = summary.SELL;
-        }
-
-        // Render stock cards
-        function renderStocks(stocks) {
-            const stockGrid = document.getElementById('stock-grid');
-            stockGrid.innerHTML = '';
-            stocks.forEach(stock => {
-                const card = document.createElement('div');
-                card.classList.add('stock-card');
-                card.innerHTML = `
-                    <h3>${stock.symbol}</h3>
-                    <p>${stock.name}</p>
-                    <p class="${stock.recommendation.toLowerCase()}">${stock.percent_change_2w.toFixed(2)}%</p>
-                    <p>${stock.recommendation}</p>
-                    <p>$${stock.current_price.toFixed(2)}</p>
-                    <p>Sentiment: ${stock.news_sentiment.toFixed(3)}</p>
-                    <div class="chart-buttons">
-                        <button onclick="renderChart('${stock.symbol}', '1D')">1D</button>
-                        <button onclick="renderChart('${stock.symbol}', '1W')">1W</button>
-                        <button onclick="renderChart('${stock.symbol}', '1M')">1M</button>
-                    </div>
-                    <canvas id="chart-${stock.symbol}"></canvas>
-                    <button onclick="getLivePrediction('${stock.symbol}')">Get Live Prediction</button>
-                    <button onclick="viewNews('${stock.symbol}')">View News</button>
-                `;
-                stockGrid.appendChild(card);
-                renderChart(stock.symbol, '1D');
-            });
-        }
-
-        // Render chart for a stock
-        async function renderChart(symbol, period) {
-            try {
-                const response = await fetch(`/api/stock_history/${symbol}/${period}`);
-                const data = await response.json();
-                if (data[0]?.error) {
-                    console.error(data[0].error);
-                    return;
-                }
-                const labels = data.map(item => item.date);
-                const prices = data.map(item => item.close);
-                const ctx = document.getElementById(`chart-${symbol}`).getContext('2d');
-                new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: `${symbol} Price`,
-                            data: prices,
-                            borderColor: '#00C4B4',
-                            fill: false
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        scales: {
-                            x: { display: true },
-                            y: { display: true }
-                        }
-                    }
-                });
-            } catch (error) {
-                console.error(`Error rendering chart for ${symbol}:`, error);
-            }
-        }
-
-        // Filter stocks
-        function filterStocks() {
-            const searchTerm = document.getElementById('search').value.toLowerCase();
-            const sector = document.getElementById('sector-filter').value;
-            const filteredStocks = stocksData.filter(stock => {
-                const matchesSearch = stock.symbol.toLowerCase().includes(searchTerm) || stock.name.toLowerCase().includes(searchTerm);
-                const matchesSector = sector ? stock.sector === sector : true;
-                return matchesSearch && matchesSector;
-            });
-            renderStocks(filteredStocks);
-        }
-
-        // Reset filters
-        function resetFilters() {
-            document.getElementById('search').value = '';
-            document.getElementById('sector-filter').value = '';
-            renderStocks(stocksData);
-        }
-
-        // Refresh data
-        async function refreshData() {
-            try {
-                const response = await fetch('/api/refresh', { method: 'POST' });
-                const result = await response.json();
-                if (result.success) {
-                    fetchStockData();
-                } else {
-                    alert('Error refreshing data: ' + result.error);
-                }
-            } catch (error) {
-                console.error('Error refreshing data:', error);
-            }
-        }
-
-        // Get live prediction
-        async function getLivePrediction(symbol) {
-            try {
-                const response = await fetch(`/api/live_prediction/${symbol}`);
-                const data = await response.json();
-                if (data.error) {
-                    alert('Error: ' + data.error);
-                    return;
-                }
-                alert(`Live Prediction for ${symbol}: ${data.recommendation}\nCurrent Price: $${data.current_price.toFixed(2)}\nChange Today: ${data.percent_change_today.toFixed(2)}%`);
-            } catch (error) {
-                console.error(`Error getting live prediction for ${symbol}:`, error);
-            }
-        }
-
-        // View news
-        async function viewNews(symbol) {
-            try {
-                const response = await fetch(`/api/stock_news/${symbol}`);
-                const news = await response.json();
-                if (news.error) {
-                    alert('Error: ' + news.error);
-                    return;
-                }
-                let newsContent = `News for ${symbol}:\n\n`;
-                news.forEach(article => {
-                    newsContent += `${article.title}\n${article.link}\n${article.publisher} - ${article.published_at}\n\n`;
-                });
-                alert(newsContent);
-            } catch (error) {
-                console.error(`Error fetching news for ${symbol}:`, error);
-            }
-        }
-
-        // Event listeners for filters
-        document.getElementById('search').addEventListener('input', filterStocks);
-        document.getElementById('sector-filter').addEventListener('change', filterStocks);
-
-        // Initial load
-        fetchStockData();
-    </script>
+      } catch (err) {
+        alert("Error refreshing data: " + err.message);
+      } finally {
+        document.getElementById("refreshBtn").innerText = "🔄 Refresh";
+      }
+    });
+  </script>
 </body>
 </html>
