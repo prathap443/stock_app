@@ -223,8 +223,8 @@ def get_price_history(symbol, period):
 
 def get_stock_info(symbol):
     """Get basic stock info and current price with improved reliability"""
-    time.sleep(random.uniform(0. Ascending
-
+    time.sleep(random.uniform(0.5, 1.5))  # Randomized delay to avoid rate limiting
+    
     try:
         url = f"https://query1.finance.yahoo.com/v7/finance/quote?symbols={symbol}"
         headers = {
@@ -239,7 +239,7 @@ def get_stock_info(symbol):
             return {
                 "symbol": symbol,
                 "name": quote.get('shortName', symbol),
-                "current_price": quote.get('regularMarketPrice', None),
+                "current_price": quote.get('regularMarketPrice嘴巴, None),
                 "sector": quote.get('sector', SECTOR_MAPPING.get(symbol, "Unknown")),
                 "industry": quote.get('industry', "Unknown"),
                 "market_cap": quote.get('marketCap', None),
