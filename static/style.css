@@ -1,145 +1,216 @@
-/* Define theme variables */
-:root {
-    --bg-color: #f0f2f5;
-    --card-bg: rgba(255, 255, 255, 0.7);
-    --text-color: #333;
-    --muted-color: #666;
-    --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  }
-  
-  [data-theme="dark"] {
-    --bg-color: #1a1a1a;
-    --card-bg: rgba(40, 40, 40, 0.7);
-    --text-color: #f0f0f0;
-    --muted-color: #aaa;
-    --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  }
-  
-  body {
-    background: var(--bg-color);
-    color: var(--text-color);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    transition: background 0.3s, color 0.3s;
-  }
-  
-  .stock-card {
-    backdrop-filter: blur(10px);
-    background: var(--card-bg);
-    border-radius: 15px;
-    padding: 15px;
-    box-shadow: var(--card-shadow);
-    transition: transform 0.2s, background 0.3s;
-    color: var(--text-color);
-  }
-  
-  .stock-card:hover {
-    transform: translateY(-5px);
-  }
-  
-  .text-muted {
-    color: var(--muted-color) !important;
-  }
-  
-  .fade-in {
-    animation: fadeIn 0.6s ease-in-out;
-  }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-  }
-  
-  .btn-outline-secondary {
-    color: var(--text-color);
-    border-color: var(--text-color);
-  }
-  
-  .btn-outline-secondary:hover {
-    background: var(--card-bg);
-  }
-  
-  .recommendation-box {
-    cursor: pointer;
-    transition: transform 0.2s;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
-  }
-  
-  .recommendation-box:hover {
-    transform: scale(1.05);
-  }
-  
-  .recommendation-box.active {
-    border: 2px solid #007bff;
-    transform: scale(1.05);
-  }
-  
-  .buy-box {
-    background: linear-gradient(145deg, #34C759, #1A7431);
-    color: white;
-  }
-  
-  .hold-box {
-    background: linear-gradient(145deg, #FF9500, #CC4D00);
-    color: white;
-  }
-  
-  .sell-box {
-    background: linear-gradient(145deg, #FF3B30, #A61C1C);
-    color: white;
-  }
-  
-  .time-period-btn {
-    font-size: 0.8rem;
-    padding: 2px 8px;
-  }
-  
-  .time-period-btn.active {
-    background-color: #007bff;
-    color: white;
-    border-color: #007bff;
-  }
-  
-  .expand-icon {
-    font-size: 0.9rem;
-    padding: 2px 6px;
-    margin-left: 5px;
-    cursor: pointer;
-  }
-  
-  .expand-icon:hover {
-    background-color: #e9ecef;
-    border-radius: 5px;
-  }
-  
-  .modal-content {
-    background: var(--card-bg);
-    color: var(--text-color);
-  }
-  
-  .modal-header {
-    border-bottom: 1px solid var(--muted-color);
-  }
-  
-  .modal-footer {
-    border-top: 1px solid var(--muted-color);
-  }
-  
-  .list-group-item {
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid var(--muted-color);
-  }
-  
-  .list-group-item:last-child {
-    border-bottom: none;
-  }
-  
-  .list-group-item a {
-    color: var(--text-color);
-    text-decoration: none;
-  }
-  
-  .list-group-item a:hover {
-    text-decoration: underline;
-  }
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f9;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+header h1 {
+  font-size: 2em;
+  color: #333;
+}
+
+header p {
+  color: #666;
+}
+
+#last-updated {
+  font-size: 0.9em;
+  color: #888;
+  margin-top: 5px;
+}
+
+/* News Ticker Styles */
+.news-ticker {
+  background-color: #1a1a1a;
+  color: #fff;
+  padding: 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  height: 40px;
+  position: relative;
+}
+
+#news-ticker-content {
+  display: inline-block;
+  animation: scroll 30s linear infinite;
+}
+
+.news-item {
+  display: inline-block;
+  margin-right: 50px;
+  font-size: 0.9em;
+}
+
+@keyframes scroll {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+/* Summary Section with Glossy Gradients */
+.summary {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.summary-item {
+  text-align: center;
+  padding: 15px;
+  border-radius: 10px;
+  color: #fff;
+  width: 120px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.summary-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0));
+  z-index: 0;
+}
+
+.summary-item h3, .summary-item p {
+  position: relative;
+  z-index: 1;
+}
+
+.buy {
+  background: linear-gradient(45deg, #28a745, #34c759);
+}
+
+.hold {
+  background: linear-gradient(45deg, #ffc107, #ffd54f);
+}
+
+.sell {
+  background: linear-gradient(45deg, #dc3545, #ff6666);
+}
+
+.summary-item h3 {
+  margin: 0;
+  font-size: 1.2em;
+}
+
+.summary-item p {
+  margin: 5px 0 0;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+/* Filters */
+.filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filters input, .filters select, .filters button {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.refresh-btn {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.refresh-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Stock Grid */
+.stock-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.stock-card {
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.stock-card h3 {
+  margin: 0;
+  font-size: 1.2em;
+}
+
+.stock-card p {
+  margin: 5px 0;
+}
+
+.buy {
+  color: #28a745;
+}
+
+.hold {
+  color: #ffc107;
+}
+
+.sell {
+  color: #dc3545;
+}
+
+.chart-buttons {
+  display: flex;
+  gap: 5px;
+  margin: 10px 0;
+}
+
+.chart-buttons button {
+  padding: 5px 10px;
+  border: none;
+  background-color: #e9ecef;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.chart-buttons button:hover {
+  background-color: #dee2e6;
+}
+
+.stock-card button {
+  padding: 8px;
+  margin: 5px 0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.stock-card button:first-of-type {
+  background-color: #00C4B4;
+  color: #fff;
+}
+
+.stock-card button:last-of-type {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+.stock-card button:hover {
+  opacity: 0.9;
+}
