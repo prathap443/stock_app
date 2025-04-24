@@ -21,22 +21,21 @@
       </button>
     </div>
 
-    <!-- Recommendation Cards -->
     <div class="row text-center mb-3">
-      <div class="col-md-4 mb-3">
-        <div id="buyBox" class="p-4 buy-box rounded recommendation-box" onclick="filterByRecommendation('BUY')">
+      <div class="col-md-4">
+        <div id="buyBox" class="p-3 buy-box rounded recommendation-box" onclick="filterByRecommendation('BUY')">
           <h5>BUY</h5>
           <h3 id="buyCount">0</h3>
         </div>
       </div>
-      <div class="col-md-4 mb-3">
-        <div id="holdBox" class="p-4 hold-box rounded recommendation-box" onclick="filterByRecommendation('HOLD')">
+      <div class="col-md-4">
+        <div id="holdBox" class="p-3 hold-box rounded recommendation-box" onclick="filterByRecommendation('HOLD')">
           <h5>HOLD</h5>
           <h3 id="holdCount">0</h3>
         </div>
       </div>
-      <div class="col-md-4 mb-3">
-        <div id="sellBox" class="p-4 sell-box rounded recommendation-box" onclick="filterByRecommendation('SELL')">
+      <div class="col-md-4">
+        <div id="sellBox" class="p-3 sell-box rounded recommendation-box" onclick="filterByRecommendation('SELL')">
           <h5>SELL</h5>
           <h3 id="sellCount">0</h3>
         </div>
@@ -181,7 +180,6 @@
         const trendColor = stock.percent_change_2w >= 0 ? 'text-success' : 'text-danger';
         const trendIcon = stock.percent_change_2w >= 0 ? '↑' : '↓';
         const chartId = `chart-${i}`;
-        const recClass = `${stock.recommendation.toLowerCase()}-recommendation`;
         
         html += `
           <div class="col-md-6 col-lg-4 mb-4">
@@ -189,24 +187,19 @@
               <div class="card-header">
                 <div class="symbol-container">
                   <h5>${stock.symbol}</h5>
-                  <span class="badge ${recClass}">${stock.recommendation}</span>
+                  <span class="badge ${getRecommendationClass(stock.recommendation)}">${stock.recommendation}</span>
                 </div>
-                <small class="text-muted">${stock.name || 'Yahoo Finance'}</small>
+                <small class="text-muted">${stock.name}</small>
               </div>
               <div class="card-body">
                 <div class="price-row">
-                  <div class="current-price">${stock.current_price?.toFixed(2) || 'N/A'}</div>
+                  <div class="current-price">$${stock.current_price?.toFixed(2) || 'N/A'}</div>
                   <div class="change ${trendColor}">
                     ${trendIcon} ${Math.abs(stock.percent_change_2w).toFixed(2)}%
                   </div>
                 </div>
                 <div class="chart-container">
                   <canvas id="${chartId}" height="100"></canvas>
-                </div>
-                <div class="btn-group btn-group-sm mb-2" role="group">
-                  <button type="button" class="btn btn-outline-secondary time-period-btn" onclick="updateChart('${stock.symbol}', '1D', ${i}, this); event.stopPropagation();">1D</button>
-                  <button type="button" class="btn btn-outline-secondary time-period-btn" onclick="updateChart('${stock.symbol}', '1W', ${i}, this); event.stopPropagation();">1W</button>
-                  <button type="button" class="btn btn-outline-secondary time-period-btn" onclick="updateChart('${stock.symbol}', '1M', ${i}, this); event.stopPropagation();">1M</button>
                 </div>
                 <div class="sentiment-row">
                   <span class="sentiment-label">Sentiment:</span>
@@ -215,11 +208,8 @@
               </div>
               <div class="card-footer">
                 <span class="sector-badge">${stock.sector}</span>
-                <div>
-                  <button class="btn btn-sm btn-info get-prediction-btn" onclick="getLivePrediction('${stock.symbol}', ${i}); event.stopPropagation();">Get Live Prediction</button>
-                </div>
+                <span class="view-details">View Details</span>
               </div>
-              <div id="livePrediction-${i}" class="small mt-1 px-3 pb-2"></div>
             </div>
           </div>`;
       });
@@ -451,7 +441,6 @@
       
       const dates = historyData.map(item => item.date);
       const prices = historyData.map(item => item.close);
-      const isIntraday = period === '1D';
       
       ctx.chart = new Chart(ctx, {
         type: 'line',
@@ -460,14 +449,10 @@
           datasets: [{
             data: prices,
             borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 2,
-            tension: 0.4,
+            borderWidth: 1.5,
+            tension: 0.3,
             pointRadius: 0,
-            pointHoverRadius: 6,
-            pointBackgroundColor: 'rgba(75, 192, 192, 1)',
-            pointHoverBackgroundColor: 'rgba(75, 192, 192, 1)',
-            pointHoverBorderColor: 'white',
-            pointHoverBorderWidth: 2
+            fill: false
           }]
         },
         options: {
@@ -475,170 +460,11 @@
           maintainAspectRatio: false,
           plugins: {
             legend: { display: false },
-            tooltip: { 
-              enabled: true,
-              mode: 'index',
-              intersect: false,
-              callbacks: {
-                label: function(context) {
-                  return '
-
-    function populateSectorFilter(stocks) {
-      const sectorFilter = document.getElementById("sectorFilter");
-      sectorFilter.innerHTML = '<option value="">All Sectors</option>';
-      
-      const sectors = [...new Set(stocks.map(stock => stock.sector))].sort();
-      sectors.forEach(sector => {
-        const option = document.createElement("option");
-        option.value = sector;
-        option.textContent = sector;
-        sectorFilter.appendChild(option);
-      });
-    }
-
-    function filterStocks() {
-      const searchTerm = document.getElementById("stockSearch").value.toLowerCase();
-      const selectedSector = document.getElementById("sectorFilter").value;
-      
-      const filteredStocks = allStocks.filter(stock => {
-        const matchesSearch = stock.symbol.toLowerCase().includes(searchTerm) || 
-                             (stock.name && stock.name.toLowerCase().includes(searchTerm));
-        const matchesSector = !selectedSector || stock.sector === selectedSector;
-        const matchesRecommendation = !selectedRecommendation || stock.recommendation === selectedRecommendation;
-        
-        return matchesSearch && matchesSector && matchesRecommendation;
-      });
-      
-      renderStocks(filteredStocks);
-    }
-
-    function filterByRecommendation(recommendation) {
-      if (selectedRecommendation === recommendation) {
-        selectedRecommendation = '';
-      } else {
-        selectedRecommendation = recommendation;
-      }
-      
-      document.querySelectorAll('.recommendation-box').forEach(box => {
-        box.classList.remove('active');
-      });
-      
-      if (selectedRecommendation) {
-        document.getElementById(`${selectedRecommendation.toLowerCase()}Box`).classList.add('active');
-      }
-      
-      filterStocks();
-    }
-
-    function resetFilters() {
-      selectedRecommendation = '';
-      selectedTimePeriods = {};
-      document.getElementById("stockSearch").value = '';
-      document.getElementById("sectorFilter").value = '';
-      
-      document.querySelectorAll('.recommendation-box').forEach(box => {
-        box.classList.remove('active');
-      });
-      
-      filterStocks();
-    }
-
-    function toggleTheme() {
-      const current = document.documentElement.getAttribute('data-theme') || 'light';
-      const newTheme = current === 'light' ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', newTheme);
-      localStorage.setItem('theme', newTheme);
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const saved = localStorage.getItem('theme') || 'light';
-      document.documentElement.setAttribute('data-theme', saved);
-      
-      loadDashboard();
-      
-      document.getElementById("stockSearch").addEventListener("input", filterStocks);
-      document.getElementById("sectorFilter").addEventListener("change", filterStocks);
-      document.getElementById("resetFilters").addEventListener("click", resetFilters);
-    });
-
-    document.getElementById("refreshBtn").addEventListener("click", async () => {
-      const refreshBtn = document.getElementById("refreshBtn");
-      refreshBtn.disabled = true;
-      refreshBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Refreshing...';
-      
-      try {
-        const res = await fetch('/api/refresh', { method: 'POST' });
-        const json = await res.json();
-        
-        if (json.success) {
-          selectedRecommendation = '';
-          selectedTimePeriods = {};
-          document.querySelectorAll('.recommendation-box').forEach(box => {
-            box.classList.remove('active');
-          });
-          
-          await loadDashboard();
-        } else {
-          alert("Refresh failed: " + json.error);
-        }
-      } catch (err) {
-        alert("Error refreshing data: " + err.message);
-      } finally {
-        refreshBtn.disabled = false;
-        refreshBtn.innerHTML = '<span class="refresh-icon">🔄</span> Refresh';
-      }
-    });
-  </script>
-</body>
-</html> + context.raw.toFixed(2);
-                }
-              }
-            }
+            tooltip: { enabled: false }
           },
           scales: {
-            x: { 
-              display: true,
-              grid: {
-                display: true,
-                color: 'rgba(200, 200, 200, 0.1)',
-                drawBorder: false
-              },
-              ticks: {
-                display: true,
-                maxTicksLimit: 5,
-                autoSkip: true,
-                font: {
-                  size: 10
-                },
-                color: 'rgba(150, 150, 150, 0.9)',
-                callback: function(value, index, values) {
-                  if (isIntraday) {
-                    const date = new Date(dates[index]);
-                    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                  } else {
-                    const date = new Date(dates[index]);
-                    return date.toLocaleDateString('en-US', { month: 'short', day: '2-digit' });
-                  }
-                }
-              }
-            },
-            y: { 
-              display: true,
-              position: 'right',
-              grid: {
-                display: true,
-                color: 'rgba(200, 200, 200, 0.1)',
-                drawBorder: false
-              },
-              ticks: {
-                display: true,
-                font: {
-                  size: 10
-                },
-                color: 'rgba(150, 150, 150, 0.9)',
-                padding: 5
-              }
-            }
+            x: { display: false },
+            y: { display: false }
           },
           elements: {
             line: {
