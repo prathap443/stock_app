@@ -253,7 +253,7 @@
   .stats-grid {
     grid-template-columns: 1fr;
   }
-
+  
   .modal-body {
     padding: 1rem;
   }
@@ -428,60 +428,4 @@ body {
 
 .bg-warning {
   background-color: #FF9500 !important;
-}
-
-.bg-danger {
-  background-color: #FF3B30 !important;
-}
-
-/* News Ticker Styles */
-.news-ticker {
-  background-color: #1a1a1a;
-  color: #fff;
-  padding: 10px;
-  overflow: hidden;
-  white-space: nowrap;
-  margin-bottom: 20px;
-  border-radius: 5px;
-  height: 40px;
-  position: relative;
-}
-
-#news-ticker-content {
-  display: inline-block;
-  animation: scroll 30s linear infinite;
-}
-
-.news-item {
-  display: inline-block;
-  margin-right: 50px;
-  font-size: 0.9em;
-}
-
-@keyframes scroll {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
-}
-
-/* Modal Additional Styles */
-.stock-info, .stock-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.stock-info div, .stock-stats div {
-  padding: 5px;
-}
-
-.stock-info strong, .stock-stats strong {
-  display: block;
-  font-weight: bold;
-  color: #555;
-}
-
-.stock-info p, .stock-stats p {
-  margin: 5px 0 0;
-  color: #333;
 }
