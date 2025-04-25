@@ -21,13 +21,6 @@
       </button>
     </div>
 
-    <!-- Scrolling News Ticker -->
-    <div class="news-ticker">
-      <div id="news-ticker-content">
-        <!-- News items will be populated by JavaScript -->
-      </div>
-    </div>
-
     <div class="row text-center mb-3">
       <div class="col-md-4">
         <div id="buyBox" class="p-3 buy-box rounded recommendation-box" onclick="filterByRecommendation('BUY')">
@@ -73,17 +66,7 @@
       </div>
     </div>
 
-    <!-- Featured Stocks Section -->
-    <div class="mb-5">
-      <h2 class="mb-3">Featured Stocks</h2>
-      <div id="featuredStocksContent" class="row g-4"></div>
-    </div>
-
-    <!-- All Stocks Section -->
-    <div>
-      <h2 class="mb-3">All Stocks</h2>
-      <div id="dashboardContent" class="row g-4"></div>
-    </div>
+    <div id="dashboardContent" class="row g-4"></div>
   </div>
 
   <!-- Stock Detail Modal -->
@@ -134,6 +117,7 @@
                     <div id="detailRecommendation"></div>
                   </div>
                 </div>
+                
                 <div class="mt-3">
                   <h5>Live Prediction</h5>
                   <div id="detailPrediction" class="prediction-container"></div>
@@ -141,82 +125,11 @@
               </div>
             </div>
           </div>
+          
           <div class="row mt-4">
             <div class="col-12">
               <h5>Recent News</h5>
               <div id="detailNews" class="news-container"></div>
-            </div>
-          </div>
-          <div class="row mt-4">
-            <div class="col-12">
-              <h5>About</h5>
-              <p id="detailAbout"></p>
-              <p><a href="#" onclick="alert('More details coming soon!'); return false;">Show more</a></p>
-              <div class="stock-info">
-                <div>
-                  <strong>CEO</strong>
-                  <p id="detailCEO"></p>
-                </div>
-                <div>
-                  <strong>Employees</strong>
-                  <p id="detailEmployees"></p>
-                </div>
-                <div>
-                  <strong>Headquarters</strong>
-                  <p id="detailHeadquarters"></p>
-                </div>
-                <div>
-                  <strong>Founded</strong>
-                  <p id="detailFounded"></p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row mt-4">
-            <div class="col-12">
-              <h5>Key Statistics</h5>
-              <div class="stock-stats">
-                <div>
-                  <strong>Market cap</strong>
-                  <p id="detailMarketCap"></p>
-                </div>
-                <div>
-                  <strong>Price-Earnings ratio</strong>
-                  <p id="detailPERatio"></p>
-                </div>
-                <div>
-                  <strong>Dividend yield</strong>
-                  <p id="detailDividendYield"></p>
-                </div>
-                <div>
-                  <strong>Average volume</strong>
-                  <p id="detailAvgVolume"></p>
-                </div>
-                <div>
-                  <strong>High today</strong>
-                  <p id="detailHighToday"></p>
-                </div>
-                <div>
-                  <strong>Low today</strong>
-                  <p id="detailLowToday"></p>
-                </div>
-                <div>
-                  <strong>Open price</strong>
-                  <p id="detailOpenPrice"></p>
-                </div>
-                <div>
-                  <strong>Volume</strong>
-                  <p id="detailVolume"></p>
-                </div>
-                <div>
-                  <strong>52 Week high</strong>
-                  <p id="detailWeek52High"></p>
-                </div>
-                <div>
-                  <strong>52 Week low</strong>
-                  <p id="detailWeek52Low"></p>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -233,69 +146,26 @@
     let selectedRecommendation = '';
     let selectedTimePeriods = {};
     let currentDetailSymbol = '';
-    let allNews = [];
-
+    
     async function loadDashboard() {
       try {
         document.getElementById("dashboardContent").innerHTML = '<div class="col-12 text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>';
-        document.getElementById("featuredStocksContent").innerHTML = '<div class="col-12 text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>';
-
+        
         const response = await fetch('/api/stocks?t=' + Date.now());
         const data = await response.json();
         if (data && data.stocks) {
           allStocks = data.stocks;
           document.getElementById("dashboardContent").innerHTML = '';
-          document.getElementById("featuredStocksContent").innerHTML = '';
           renderCounts(data.summary);
-          fetchNewsForAllStocks();
-          renderFeaturedStocks();
           renderStocks(allStocks);
           populateSectorFilter(allStocks);
           document.getElementById("lastUpdated").innerText = `Last updated: ${data.last_updated}`;
         } else {
           document.getElementById("dashboardContent").innerHTML = '<p class="text-danger">No data available.</p>';
-          document.getElementById("featuredStocksContent").innerHTML = '<p class="text-danger">No featured stocks available.</p>';
         }
       } catch (error) {
         document.getElementById("dashboardContent").innerHTML = `<p class="text-danger">Error loading data: ${error}</p>`;
-        document.getElementById("featuredStocksContent").innerHTML = `<p class="text-danger">Error loading featured stocks: ${error}</p>`;
       }
-    }
-
-    // Fetch news for all stocks and populate the ticker
-    async function fetchNewsForAllStocks() {
-      allNews = [];
-      for (const stock of allStocks) {
-        try {
-          const response = await fetch(`/api/stock_news/${stock.symbol}`);
-          const news = await response.json();
-          if (news && !news.error) {
-            news.forEach(article => {
-              allNews.push(`${stock.symbol}: ${article.title} (${article.publisher})`);
-            });
-          }
-        } catch (error) {
-          console.error(`Error fetching news for ${stock.symbol}:`, error);
-        }
-      }
-      displayNewsTicker();
-    }
-
-    // Display news ticker
-    function displayNewsTicker() {
-      const tickerContent = document.getElementById('news-ticker-content');
-      tickerContent.innerHTML = '';
-      if (allNews.length === 0) {
-        tickerContent.textContent = 'No news available.';
-        return;
-      }
-      allNews.forEach((newsItem, index) => {
-        const span = document.createElement('span');
-        span.textContent = newsItem;
-        span.classList.add('news-item');
-        span.id = `news-item-${index}`;
-        tickerContent.appendChild(span);
-      });
     }
 
     function renderCounts(summary) {
@@ -304,25 +174,13 @@
       document.getElementById("sellCount").innerText = summary.SELL || 0;
     }
 
-    function renderFeaturedStocks() {
-      const featuredSymbols = ['AAPL', 'ADBE', 'AMD'];
-      const featuredStocks = allStocks.filter(stock => featuredSymbols.includes(stock.symbol));
-      renderStockSection(featuredStocks, 'featuredStocksContent');
-    }
-
     function renderStocks(stocks) {
-      const featuredSymbols = ['AAPL', 'ADBE', 'AMD'];
-      const otherStocks = stocks.filter(stock => !featuredSymbols.includes(stock.symbol));
-      renderStockSection(otherStocks, 'dashboardContent');
-    }
-
-    function renderStockSection(stocks, containerId) {
       let html = '';
       stocks.forEach((stock, i) => {
         const trendColor = stock.percent_change_2w >= 0 ? 'text-success' : 'text-danger';
         const trendIcon = stock.percent_change_2w >= 0 ? '↑' : '↓';
-        const chartId = `${containerId}-chart-${i}`;
-
+        const chartId = `chart-${i}`;
+        
         html += `
           <div class="col-md-6 col-lg-4 mb-4">
             <div class="stock-card" onclick="showStockDetail('${stock.symbol}')">
@@ -355,14 +213,14 @@
             </div>
           </div>`;
       });
-
-      document.getElementById(containerId).innerHTML = html;
-
+      
+      document.getElementById("dashboardContent").innerHTML = html;
+      
       stocks.forEach((stock, i) => {
-        renderStockChart(`${containerId}-chart-${i}`, stock.history_1d || [], '1D');
+        renderStockChart(`chart-${i}`, stock.history_1d || [], '1D');
       });
     }
-
+    
     function getRecommendationClass(recommendation) {
       switch(recommendation) {
         case 'BUY': return 'bg-success';
@@ -375,60 +233,43 @@
       try {
         currentDetailSymbol = symbol;
         const stock = allStocks.find(s => s.symbol === symbol);
-
+        
         if (!stock) {
           alert(`Stock data for ${symbol} not found`);
           return;
         }
-
+        
         // Update modal title and basic info
         document.getElementById('stockDetailModalLabel').innerText = `${symbol} - ${stock.name}`;
         document.getElementById('detailSymbol').innerText = symbol;
         document.getElementById('detailName').innerText = stock.name;
         document.getElementById('detailPrice').innerText = `$${stock.current_price?.toFixed(2) || 'N/A'}`;
-
+        
         const trendColor = stock.percent_change_2w >= 0 ? 'text-success' : 'text-danger';
         const trendIcon = stock.percent_change_2w >= 0 ? '↑' : '↓';
         document.getElementById('detailChange').innerText = `${trendIcon} ${Math.abs(stock.percent_change_2w).toFixed(2)}%`;
         document.getElementById('detailChange').className = `detail-change ${trendColor}`;
-
+        
         // Update technical indicators
         document.getElementById('detailRSI').innerText = stock.technical_indicators?.rsi || 'N/A';
         document.getElementById('detailMACD').innerText = stock.technical_indicators?.macd || 'N/A';
         document.getElementById('detailSentiment').innerText = stock.news_sentiment !== undefined ? stock.news_sentiment.toFixed(3) : 'N/A';
-
+        
         const recElement = document.getElementById('detailRecommendation');
         recElement.innerText = stock.recommendation;
         recElement.className = '';
-        recElement.classList.add(stock.recommendation === 'BUY' ? 'text-success' :
+        recElement.classList.add(stock.recommendation === 'BUY' ? 'text-success' : 
                                 stock.recommendation === 'SELL' ? 'text-danger' : 'text-warning');
-
-        // Update About and Key Statistics
-        document.getElementById('detailAbout').innerText = stock.about || 'No description available.';
-        document.getElementById('detailCEO').innerText = stock.ceo || 'N/A';
-        document.getElementById('detailEmployees').innerText = stock.employees || 'N/A';
-        document.getElementById('detailHeadquarters').innerText = stock.headquarters || 'N/A';
-        document.getElementById('detailFounded').innerText = stock.founded || 'N/A';
-        document.getElementById('detailMarketCap').innerText = stock.market_cap ? (stock.market_cap / 1e9).toFixed(2) + 'B' : 'N/A';
-        document.getElementById('detailPERatio').innerText = stock.pe_ratio ? stock.pe_ratio.toFixed(2) : 'N/A';
-        document.getElementById('detailDividendYield').innerText = stock.dividend_yield ? stock.dividend_yield.toFixed(2) + '%' : '—';
-        document.getElementById('detailAvgVolume').innerText = stock.avg_volume ? (stock.avg_volume / 1e6).toFixed(2) + 'M' : 'N/A';
-        document.getElementById('detailHighToday').innerText = stock.high_today ? '$' + stock.high_today.toFixed(2) : 'N/A';
-        document.getElementById('detailLowToday').innerText = stock.low_today ? '$' + stock.low_today.toFixed(2) : 'N/A';
-        document.getElementById('detailOpenPrice').innerText = stock.open_price ? '$' + stock.open_price.toFixed(2) : 'N/A';
-        document.getElementById('detailVolume').innerText = stock.volume ? (stock.volume / 1e6).toFixed(2) + 'M' : 'N/A';
-        document.getElementById('detailWeek52High').innerText = stock.week_52_high ? '$' + stock.week_52_high.toFixed(2) : 'N/A';
-        document.getElementById('detailWeek52Low').innerText = stock.week_52_low ? '$' + stock.week_52_low.toFixed(2) : 'N/A';
-
+        
         // Update news
         renderDetailNews(stock.news_articles);
-
+        
         // Get live prediction
         getLiveDetailPrediction(symbol);
-
+        
         // Show 1M chart by default
         updateDetailChart('1M');
-
+        
         // Show the modal
         const modal = new bootstrap.Modal(document.getElementById('stockDetailModal'));
         modal.show();
@@ -437,20 +278,20 @@
         alert(`Error loading details: ${error}`);
       }
     }
-
+    
     async function updateDetailChart(period) {
       if (!currentDetailSymbol) return;
-
+      
       // Update button active state
       document.querySelectorAll('.period-selector .btn').forEach(btn => {
         btn.classList.remove('active');
       });
       document.querySelector(`.period-selector .btn:nth-child(${period === '1D' ? 1 : period === '1W' ? 2 : 3})`).classList.add('active');
-
+      
       try {
         const response = await fetch(`/api/stock_history/${currentDetailSymbol}/${period}`);
         const historyData = await response.json();
-
+        
         if (historyData && historyData.length > 0) {
           if (historyData[0].error) {
             document.getElementById('detailChart').parentElement.innerHTML = `<p class="text-muted">${historyData[0].error}</p>`;
@@ -465,17 +306,17 @@
         document.getElementById('detailChart').parentElement.innerHTML = `<p class="text-muted">Error loading chart: ${error}</p>`;
       }
     }
-
+    
     function renderDetailStockChart(historyData, period) {
       const ctx = document.getElementById('detailChart').getContext('2d');
       if (ctx.chart) {
         ctx.chart.destroy();
       }
-
+      
       const dates = historyData.map(item => item.date);
       const prices = historyData.map(item => item.close);
       const isIntraday = period === '1D';
-
+      
       ctx.chart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -532,15 +373,15 @@
         }
       });
     }
-
+    
     function renderDetailNews(articles) {
       const newsContainer = document.getElementById('detailNews');
-
+      
       if (!articles || articles.length === 0) {
         newsContainer.innerHTML = '<p class="text-muted">No recent news available.</p>';
         return;
       }
-
+      
       let newsHtml = '';
       articles.forEach(article => {
         newsHtml += `
@@ -549,34 +390,34 @@
             <p class="small text-muted">Published by ${article.publisher} on ${article.published_at}</p>
           </div>`;
       });
-
+      
       newsContainer.innerHTML = newsHtml;
     }
-
+    
     async function getLiveDetailPrediction(symbol) {
       try {
         const predictionContainer = document.getElementById('detailPrediction');
         predictionContainer.innerHTML = '<div class="spinner-border spinner-border-sm text-primary" role="status"><span class="visually-hidden">Loading...</span></div> Getting prediction...';
-
+        
         const response = await fetch(`/api/live_prediction/${symbol}`);
         const data = await response.json();
-
+        
         if (data.error) {
           predictionContainer.innerText = `Error: ${data.error}`;
           return;
         }
-
+        
         const trendColor = data.percent_change_today >= 0 ? 'text-success' : 'text-danger';
         const trendIcon = data.percent_change_today >= 0 ? '↑' : '↓';
-
+        
         predictionContainer.innerHTML = `
-          <div class="prediction-badge ${data.recommendation === 'BUY' ? 'prediction-buy' :
-                                         data.recommendation === 'SELL' ? 'prediction-sell' :
+          <div class="prediction-badge ${data.recommendation === 'BUY' ? 'prediction-buy' : 
+                                         data.recommendation === 'SELL' ? 'prediction-sell' : 
                                          'prediction-hold'}">${data.recommendation}</div>
           <div class="prediction-details">
             <div class="${trendColor}">${trendIcon} ${Math.abs(data.percent_change_today).toFixed(2)}% today</div>
             <div class="technical mt-1">
-              <span>RSI: ${data.technical_indicators.rsi}</span> |
+              <span>RSI: ${data.technical_indicators.rsi}</span> | 
               <span>MACD: ${data.technical_indicators.macd}</span>
             </div>
             <div class="small text-muted">Updated: ${data.last_updated}</div>
@@ -590,17 +431,17 @@
       if (!historyData || historyData.length === 0 || historyData[0].error) {
         return;
       }
-
+      
       const ctx = document.getElementById(canvasId)?.getContext('2d');
       if (!ctx) return;
-
+      
       if (ctx.chart) {
         ctx.chart.destroy();
       }
-
+      
       const dates = historyData.map(item => item.date);
       const prices = historyData.map(item => item.close);
-
+      
       ctx.chart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -637,7 +478,7 @@
     function populateSectorFilter(stocks) {
       const sectorFilter = document.getElementById("sectorFilter");
       sectorFilter.innerHTML = '<option value="">All Sectors</option>';
-
+      
       const sectors = [...new Set(stocks.map(stock => stock.sector))].sort();
       sectors.forEach(sector => {
         const option = document.createElement("option");
@@ -650,23 +491,17 @@
     function filterStocks() {
       const searchTerm = document.getElementById("stockSearch").value.toLowerCase();
       const selectedSector = document.getElementById("sectorFilter").value;
-
-      const featuredSymbols = ['AAPL', 'ADBE', 'AMD'];
-      const featuredStocks = allStocks.filter(stock => featuredSymbols.includes(stock.symbol));
-      const otherStocks = allStocks.filter(stock => !featuredSymbols.includes(stock.symbol));
-
-      const filterStockList = (stocks) => {
-        return stocks.filter(stock => {
-          const matchesSearch = stock.symbol.toLowerCase().includes(searchTerm) ||
-                               (stock.name && stock.name.toLowerCase().includes(searchTerm));
-          const matchesSector = !selectedSector || stock.sector === selectedSector;
-          const matchesRecommendation = !selectedRecommendation || stock.recommendation === selectedRecommendation;
-          return matchesSearch && matchesSector && matchesRecommendation;
-        });
-      };
-
-      renderStockSection(filterStockList(featuredStocks), 'featuredStocksContent');
-      renderStockSection(filterStockList(otherStocks), 'dashboardContent');
+      
+      const filteredStocks = allStocks.filter(stock => {
+        const matchesSearch = stock.symbol.toLowerCase().includes(searchTerm) || 
+                             (stock.name && stock.name.toLowerCase().includes(searchTerm));
+        const matchesSector = !selectedSector || stock.sector === selectedSector;
+        const matchesRecommendation = !selectedRecommendation || stock.recommendation === selectedRecommendation;
+        
+        return matchesSearch && matchesSector && matchesRecommendation;
+      });
+      
+      renderStocks(filteredStocks);
     }
 
     function filterByRecommendation(recommendation) {
@@ -675,15 +510,15 @@
       } else {
         selectedRecommendation = recommendation;
       }
-
+      
       document.querySelectorAll('.recommendation-box').forEach(box => {
         box.classList.remove('active');
       });
-
+      
       if (selectedRecommendation) {
         document.getElementById(`${selectedRecommendation.toLowerCase()}Box`).classList.add('active');
       }
-
+      
       filterStocks();
     }
 
@@ -692,11 +527,11 @@
       selectedTimePeriods = {};
       document.getElementById("stockSearch").value = '';
       document.getElementById("sectorFilter").value = '';
-
+      
       document.querySelectorAll('.recommendation-box').forEach(box => {
         box.classList.remove('active');
       });
-
+      
       filterStocks();
     }
 
@@ -710,9 +545,9 @@
     document.addEventListener("DOMContentLoaded", () => {
       const saved = localStorage.getItem('theme') || 'light';
       document.documentElement.setAttribute('data-theme', saved);
-
+      
       loadDashboard();
-
+      
       document.getElementById("stockSearch").addEventListener("input", filterStocks);
       document.getElementById("sectorFilter").addEventListener("change", filterStocks);
       document.getElementById("resetFilters").addEventListener("click", resetFilters);
@@ -722,18 +557,18 @@
       const refreshBtn = document.getElementById("refreshBtn");
       refreshBtn.disabled = true;
       refreshBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Refreshing...';
-
+      
       try {
         const res = await fetch('/api/refresh', { method: 'POST' });
         const json = await res.json();
-
+        
         if (json.success) {
           selectedRecommendation = '';
           selectedTimePeriods = {};
           document.querySelectorAll('.recommendation-box').forEach(box => {
             box.classList.remove('active');
           });
-
+          
           await loadDashboard();
         } else {
           alert("Refresh failed: " + json.error);
