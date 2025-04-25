@@ -1,4 +1,31 @@
-/* Define theme variables */
+/* Live Prediction */
+#livePrediction {
+  margin-top: 8px;
+  font-size: 0.85rem;
+}
+
+.prediction-result {
+  background-color: rgba(0, 0, 0, 0.02);
+  border-radius: 6px;
+  padding: 10px;
+  margin-top: 5px;
+}
+
+.prediction-label {
+  font-weight: 600;
+}
+
+.prediction-buy {
+  color: #34C759;
+}
+
+.prediction-hold {
+  color: #FF9500;
+}
+
+.prediction-sell {
+  color: #FF3B30;
+}/* Define theme variables */
 :root {
   --bg-color: #f8f9fc;
   --card-bg: #ffffff;
@@ -48,8 +75,24 @@
 
 .chart-container {
   margin: 10px 0;
-  height: 100px;
+  height: 120px;
   position: relative;
+  background-color: rgba(0, 0, 0, 0.02);
+  border-radius: 4px;
+  padding: 5px;
+}
+
+.time-period-btn {
+  font-size: 0.8rem;
+  padding: 2px 8px;
+  margin-right: 2px;
+  border-radius: 4px;
+}
+
+.time-period-btn.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
 }
 
 .sentiment-row {
@@ -80,10 +123,20 @@
   color: var(--muted-color);
 }
 
-.view-details {
-  color: #007bff;
+.get-prediction-btn {
+  background-color: #00B1FF;
+  color: white;
+  border: none;
+  border-radius: 4px;
   font-size: 0.85rem;
-  font-weight: 500;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.get-prediction-btn:hover {
+  background-color: #009BE3;
+  transform: translateY(-2px);
 }
 
 /* Animation */
@@ -301,47 +354,70 @@ body {
 
 /* Recommendation Boxes */
 .recommendation-box {
-  border-radius: 12px;
-  backdrop-filter: blur(10px);
+  border-radius: 8px;
   transition: all 0.3s ease;
   cursor: pointer;
-  box-shadow: var(--card-shadow);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  padding: 20px 15px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.recommendation-box::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 5px 0 0 0;
+  transform: scale(0);
+  transform-origin: bottom right;
+  transition: transform 0.3s;
+}
+
+.recommendation-box:hover::after {
+  transform: scale(1);
 }
 
 .recommendation-box h5 {
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 5px;
+  font-size: 1.5rem;
 }
 
 .recommendation-box h3 {
   font-weight: 700;
   margin: 0;
+  font-size: 2.5rem;
 }
 
 .buy-box {
-  background: var(--buy-gradient);
+  background: linear-gradient(145deg, #34C759, #1A7431);
   color: white;
 }
 
 .hold-box {
-  background: var(--hold-gradient);
+  background: linear-gradient(145deg, #FF9500, #CC4D00);
   color: white;
 }
 
 .sell-box {
-  background: var(--sell-gradient);
+  background: linear-gradient(145deg, #FF3B30, #A61C1C);
   color: white;
 }
 
 .recommendation-box:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 .recommendation-box.active {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-  border: 2px solid white;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.8);
 }
 
 /* Search and Filter */
@@ -382,7 +458,7 @@ body {
 /* Stock Cards */
 .stock-card {
   background: var(--card-bg);
-  border-radius: 16px;
+  border-radius: 8px;
   overflow: hidden;
   box-shadow: var(--card-shadow);
   transition: all 0.3s ease;
@@ -391,6 +467,7 @@ body {
   border: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
+  margin-bottom: 20px;
 }
 
 .stock-card:hover {
@@ -422,10 +499,17 @@ body {
   font-size: 0.75rem;
 }
 
-.bg-success {
+.bg-success, .buy-recommendation {
   background-color: #34C759 !important;
+  color: white;
 }
 
-.bg-warning {
+.bg-warning, .hold-recommendation {
   background-color: #FF9500 !important;
+  color: white;
+}
+
+.bg-danger, .sell-recommendation {
+  background-color: #FF3B30 !important;
+  color: white;
 }
