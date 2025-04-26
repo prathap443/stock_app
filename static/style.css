@@ -254,7 +254,7 @@ body {
 /* Chart inside Modal (View Details) */
 .modal .chart-container {
   margin: 10px 0 20px 0;
-  height: 350px; /* Bigger inside modal */
+  height: 500px; /* Bigger inside modal */
   width: 100%;
   position: relative;
 }
