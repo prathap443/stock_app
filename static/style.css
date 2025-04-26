@@ -13,7 +13,7 @@
   --sell-gradient: linear-gradient(145deg, #FF3B30, #A61C1C);
 }
 
-/* Body and General */
+/* Body */
 body {
   background: var(--bg-color);
   color: var(--text-color);
@@ -21,7 +21,7 @@ body {
   transition: background 0.3s, color 0.3s;
 }
 
-/* Animation */
+/* Fade-in animation */
 .fade-in {
   animation: fadeIn 0.6s ease-in-out;
 }
@@ -31,7 +31,7 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* NEW: Chart fade-in animation */
+/* NEW: Chart fade-in animation inside modal */
 .fade-in-chart {
   animation: fadeInChart 0.6s ease forwards;
 }
@@ -47,7 +47,7 @@ body {
   }
 }
 
-/* Headers */
+/* Header */
 .display-5 {
   font-weight: 600;
 }
@@ -170,7 +170,7 @@ body {
   box-shadow: 0 15px 30px rgba(75, 192, 192, 0.4);
 }
 
-/* Footer Hover Effect */
+/* Footer hover */
 .stock-card .card-footer:hover {
   background-color: var(--hover-bg);
   text-decoration: underline;
@@ -238,10 +238,10 @@ body {
   background-color: rgba(0, 0, 0, 0.05);
 }
 
-/* Chart Container */
+/* Chart inside home page cards */
 .chart-container {
   margin: 10px 0;
-  height: 300px;
+  height: 100px; /* smaller for tiles */
   width: 100%;
   position: relative;
 }
@@ -251,7 +251,21 @@ body {
   height: 100% !important;
 }
 
-/* Sentiment Row */
+/* Chart inside Modal (View Details) */
+.modal .chart-container {
+  margin: 10px 0 20px 0;
+  height: 350px; /* Bigger inside modal */
+  width: 100%;
+  position: relative;
+}
+
+.modal .chart-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain;
+}
+
+/* Sentiment */
 .sentiment-row {
   display: flex;
   justify-content: space-between;
@@ -310,145 +324,12 @@ body {
   padding: 1.25rem 1.5rem;
 }
 
-/* Stats container */
-.stats-container {
-  background-color: rgba(0, 0, 0, 0.02);
-  border-radius: 12px;
-  padding: 20px;
-  height: 100%;
-}
-
-.price-container {
-  margin: 15px 0;
-}
-
-.detail-price {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-right: 10px;
-}
-
-.detail-change {
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 8px;
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
-/* Stats Grid */
-.stats-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
-  margin-top: 15px;
-}
-
-.stat-item {
-  background-color: var(--card-bg);
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
-}
-
-/* Prediction */
-.prediction-container {
-  background-color: var(--card-bg);
-  border-radius: 10px;
-  padding: 15px;
-  border: 1px solid var(--border-color);
-  margin-top: 10px;
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-}
-
-.prediction-badge {
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-weight: 600;
-  color: white;
-}
-
-.prediction-buy {
-  background-color: #34C759;
-}
-
-.prediction-hold {
-  background-color: #FF9500;
-}
-
-.prediction-sell {
-  background-color: #FF3B30;
-}
-
-.prediction-details {
-  flex-grow: 1;
-}
-
-/* News */
-.news-container {
-  margin-top: 15px;
-}
-
-.news-item {
-  padding: 15px;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.news-item:last-child {
-  border-bottom: none;
-}
-
-.news-item h6 {
-  margin-bottom: 8px;
-  font-weight: 600;
-}
-
-.news-item a {
-  color: var(--text-color);
-  text-decoration: none;
-}
-
-.news-item a:hover {
-  text-decoration: underline;
-  color: #007bff;
-}
-
-/* Period selector */
-.period-selector {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
-.period-selector .btn {
-  min-width: 50px;
-}
-
-/* Form Controls */
-.form-control {
-  height: 45px;
-  border-radius: 8px;
-  border-color: var(--border-color);
-  background-color: var(--card-bg);
-  color: var(--text-color);
-}
-
-.form-control:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.15);
-}
-
-.btn {
-  border-radius: 8px;
-  font-weight: 500;
-}
-
 /* Responsive */
 @media (max-width: 768px) {
   .stats-grid {
     grid-template-columns: 1fr;
   }
+
   .modal-body {
     padding: 1rem;
   }
