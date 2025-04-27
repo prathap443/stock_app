@@ -313,17 +313,26 @@ body {
   box-shadow: var(--card-shadow);
 }
 
-.modal-header {
-  border-bottom: 1px solid var(--border-color);
-  padding: 1.25rem 1.5rem;
+/* Adjust modal width for larger screens */
+.modal-dialog {
+  max-width: 90%; /* Use more of the screen width */
+  margin: 1.75rem auto;
 }
 
-/* Updated Modal Body Layout */
+@media (max-width: 768px) {
+  .modal-dialog {
+    max-width: 100%; /* Full width on mobile */
+    margin: 0;
+  }
+}
+
+/* Ensure modal body uses full width */
 .modal-body {
   padding: 1.5rem;
   display: flex;
   flex-direction: column; /* Stack chart and news vertically */
   gap: 20px;
+  width: 100%;
 }
 
 .modal-body .row:first-child {
@@ -332,17 +341,18 @@ body {
   flex-wrap: nowrap;
   gap: 20px;
   align-items: flex-start;
+  width: 100%; /* Ensure the row takes full width */
 }
 
 .modal-body .col-md-8 {
-  flex: 4; /* Chart takes more space */
+  flex: 5; /* Chart takes even more space */
   min-width: 0; /* Prevent overflow */
-  max-width: 75%; /* Cap chart width to leave space for stats */
+  max-width: 80%; /* Increased to reduce empty space on sides */
 }
 
 .modal-body .col-md-4 {
   flex: 1; /* Stats takes less space */
-  max-width: 250px; /* Reduced width for stats to make chart wider */
+  max-width: 250px; /* Keep stats compact */
   background: #f8f9fa; /* Light background for card-like appearance */
   border-radius: 8px;
   padding: 15px;
@@ -404,6 +414,7 @@ body {
 /* News Section */
 .modal-body .news-container {
   margin-top: 20px;
+  width: 100%; /* Ensure news section takes full width */
 }
 
 .modal-body .news-container .news-item {
