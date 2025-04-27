@@ -263,6 +263,7 @@ body {
 .modal .chart-container canvas {
   width: 100% !important;
   height: 100% !important;
+  max-width: 100% !important; /* Ensure canvas stretches fully */
   object-fit: contain;
   display: block; /* Fix for canvas alignment */
   margin: 0 auto;
@@ -311,12 +312,13 @@ body {
   border-radius: 16px;
   border: none;
   box-shadow: var(--card-shadow);
+  width: 100%;
 }
 
 /* Adjust modal width for larger screens */
 .modal-dialog {
-  max-width: 95%; /* Use almost the full screen width */
-  margin: 1rem auto; /* Reduced margin to maximize width */
+  max-width: 98%; /* Use almost the full screen width */
+  margin: 0.5rem auto; /* Further reduced margin to maximize width */
 }
 
 @media (max-width: 768px) {
@@ -326,12 +328,12 @@ body {
   }
 }
 
-/* Ensure modal body uses full width with reduced padding */
+/* Ensure modal body uses full width with minimal padding */
 .modal-body {
-  padding: 1rem; /* Reduced padding to maximize content width */
+  padding: 0.5rem; /* Further reduced padding */
   display: flex;
   flex-direction: column; /* Stack chart and news vertically */
-  gap: 15px;
+  gap: 10px;
   width: 100%;
 }
 
@@ -339,15 +341,16 @@ body {
   display: flex;
   flex-direction: row; /* Chart and stats side by side */
   flex-wrap: nowrap;
-  gap: 15px;
+  gap: 10px;
   align-items: flex-start;
   width: 100%; /* Ensure the row takes full width */
+  margin: 0; /* Remove default row margins */
 }
 
 .modal-body .col-md-8 {
-  flex: 6; /* Chart takes even more space */
+  flex: 7; /* Chart takes maximum space */
   min-width: 0; /* Prevent overflow */
-  max-width: none; /* Remove max-width to allow full stretching */
+  padding: 0; /* Remove padding to maximize chart width */
 }
 
 .modal-body .col-md-4 {
@@ -415,6 +418,7 @@ body {
 .modal-body .news-container {
   margin-top: 20px;
   width: 100%; /* Ensure news section takes full width */
+  padding: 0 10px; /* Add minimal padding for news section */
 }
 
 .modal-body .news-container .news-item {
@@ -443,7 +447,7 @@ body {
 
 .modal-footer {
   border-top: 1px solid var(--border-color);
-  padding: 1rem;
+  padding: 0.5rem;
 }
 
 /* Responsive */
