@@ -355,24 +355,24 @@ body {
 /* NEW: Moving Logo Carousel Section */
 .logo-carousel {
   overflow: hidden;
-  white-space: nowrap;
   width: 100%;
-  padding: 12px 0;
   background: var(--card-bg);
   border-radius: 12px;
   box-shadow: var(--card-shadow);
   margin-bottom: 20px;
+  padding: 10px 0;
 }
 
 .logo-track {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  width: max-content; /* 👈 Force track to expand based on images */
   animation: scrollLogos 25s linear infinite;
 }
 
 .logo-track img {
   height: 40px;
-  margin: 0 25px;
+  margin: 0 30px;
   object-fit: contain;
   filter: grayscale(30%);
   transition: all 0.3s ease;
@@ -388,7 +388,7 @@ body {
   100% { transform: translateX(-50%); }
 }
 
-/* Mobile Responsive Adjustment */
+/* Mobile Responsiveness */
 @media (max-width: 768px) {
   .logo-track img {
     height: 30px;
