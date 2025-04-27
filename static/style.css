@@ -315,8 +315,8 @@ body {
 
 /* Adjust modal width for larger screens */
 .modal-dialog {
-  max-width: 90%; /* Use more of the screen width */
-  margin: 1.75rem auto;
+  max-width: 95%; /* Use almost the full screen width */
+  margin: 1rem auto; /* Reduced margin to maximize width */
 }
 
 @media (max-width: 768px) {
@@ -326,12 +326,12 @@ body {
   }
 }
 
-/* Ensure modal body uses full width */
+/* Ensure modal body uses full width with reduced padding */
 .modal-body {
-  padding: 1.5rem;
+  padding: 1rem; /* Reduced padding to maximize content width */
   display: flex;
   flex-direction: column; /* Stack chart and news vertically */
-  gap: 20px;
+  gap: 15px;
   width: 100%;
 }
 
@@ -339,15 +339,15 @@ body {
   display: flex;
   flex-direction: row; /* Chart and stats side by side */
   flex-wrap: nowrap;
-  gap: 20px;
+  gap: 15px;
   align-items: flex-start;
   width: 100%; /* Ensure the row takes full width */
 }
 
 .modal-body .col-md-8 {
-  flex: 5; /* Chart takes even more space */
+  flex: 6; /* Chart takes even more space */
   min-width: 0; /* Prevent overflow */
-  max-width: 80%; /* Increased to reduce empty space on sides */
+  max-width: none; /* Remove max-width to allow full stretching */
 }
 
 .modal-body .col-md-4 {
@@ -443,7 +443,7 @@ body {
 
 .modal-footer {
   border-top: 1px solid var(--border-color);
-  padding: 1.25rem 1.5rem;
+  padding: 1rem;
 }
 
 /* Responsive */
