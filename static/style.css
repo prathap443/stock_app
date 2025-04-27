@@ -1,5 +1,3 @@
-/* Your Original Styles - Kept As-Is */
-
 /* Define theme variables */
 :root {
   --bg-color: #f8f9fc;
@@ -14,8 +12,6 @@
   --hold-gradient: linear-gradient(145deg, #FF9500, #CC4D00);
   --sell-gradient: linear-gradient(145deg, #FF3B30, #A61C1C);
 }
-
-/* (Rest of your original styles... not repeating here to save space) */
 
 /* Body */
 body {
@@ -260,6 +256,7 @@ body {
   margin: 10px 0 20px 0;
   height: 500px; /* Bigger inside modal */
   width: 100%;
+  max-width: 100%; /* Ensure it uses full width */
   position: relative;
 }
 
@@ -267,6 +264,8 @@ body {
   width: 100% !important;
   height: 100% !important;
   object-fit: contain;
+  display: block; /* Fix for canvas alignment */
+  margin: 0 auto;
 }
 
 /* Sentiment */
@@ -321,6 +320,17 @@ body {
 
 .modal-body {
   padding: 1.5rem;
+  display: flex; /* Enhanced: Use flexbox for layout */
+  flex-wrap: wrap;
+  gap: 20px; /* Enhanced: Add spacing between chart and details */
+}
+
+.modal-body .col-md-8 {
+  flex: 1 1 60%; /* Enhanced: Chart section takes 60% of space */
+}
+
+.modal-body .col-md-4 {
+  flex: 1 1 35%; /* Enhanced: Statistics section takes 35% of space */
 }
 
 .modal-footer {
@@ -337,6 +347,12 @@ body {
   .modal-body {
     padding: 1rem;
   }
+
+  /* Ensure modal sections stack on smaller screens */
+  .modal-body .col-md-8,
+  .modal-body .col-md-4 {
+    flex: 1 1 100%; /* Stack vertically on mobile */
+  }
 }
 
 /* Dark Mode */
@@ -350,7 +366,6 @@ body {
   --border-color: rgba(70, 70, 70, 0.8);
   --hover-bg: #252525;
 }
-
 
 /* NEW: Moving Logo Carousel Section */
 .logo-carousel {
@@ -402,4 +417,3 @@ body {
     margin: 0 10px;
   }
 }
-
