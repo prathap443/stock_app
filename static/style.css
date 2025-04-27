@@ -361,13 +361,16 @@ body {
   box-shadow: var(--card-shadow);
   margin-bottom: 20px;
   padding: 10px 0;
+  position: relative;
 }
 
 .logo-track {
   display: flex;
   align-items: center;
   width: fit-content;
-  animation: scrollLogos 30s linear infinite;
+  animation: scrollLogos 25s linear infinite;
+  padding-left: 0; /* 👉 very important */
+  margin-left: 0;  /* 👉 remove margin left */
 }
 
 .logo-track img {
@@ -378,6 +381,10 @@ body {
   transition: all 0.3s ease;
 }
 
+.logo-track img:first-child {
+  margin-left: 10px; /* 👈 optional tiny space for first logo */
+}
+
 .logo-track img:hover {
   filter: none;
   transform: scale(1.1);
@@ -385,5 +392,14 @@ body {
 
 @keyframes scrollLogos {
   0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); } /* 50% because duplicated */
+  100% { transform: translateX(-50%); }
 }
+
+/* Mobile */
+@media (max-width: 768px) {
+  .logo-track img {
+    height: 30px;
+    margin: 0 10px;
+  }
+}
+
