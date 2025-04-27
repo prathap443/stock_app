@@ -254,7 +254,7 @@ body {
 /* Chart inside Modal (View Details) */
 .modal .chart-container {
   margin: 10px 0 20px 0;
-  height: 500px; /* Bigger inside modal */
+  height: 400px; /* Adjusted height to better fit the layout */
   width: 100%;
   max-width: 100%; /* Ensure it uses full width */
   position: relative;
@@ -318,23 +318,81 @@ body {
   padding: 1.25rem 1.5rem;
 }
 
-/* Corrected Modal Body Layout */
+/* Updated Modal Body Layout */
 .modal-body {
   padding: 1.5rem;
   display: flex;
-  flex-wrap: nowrap; /* Updated: Prevent wrapping by default */
+  flex-direction: row; /* Ensure row layout */
+  flex-wrap: nowrap; /* Prevent wrapping by default */
   gap: 20px;
-  align-items: flex-start; /* Updated: Align items at the top */
+  align-items: flex-start; /* Align items at the top */
 }
 
 .modal-body .col-md-8 {
-  flex: 2; /* Updated: Chart section takes more space */
-  min-width: 0; /* Updated: Prevent overflow */
+  flex: 3; /* Chart takes more space */
+  min-width: 0; /* Prevent overflow */
+  max-width: 70%; /* Cap chart width to leave space for stats */
 }
 
 .modal-body .col-md-4 {
-  flex: 1; /* Updated: Statistics section takes less space */
-  max-width: 320px; /* Updated: Cap the width of the stats section */
+  flex: 1; /* Stats takes less space */
+  max-width: 300px; /* Cap the width of the stats section */
+  background: #f8f9fa; /* Light background for card-like appearance */
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Space between stats items */
+}
+
+.modal-body .col-md-4 h4 {
+  font-size: 1.25rem;
+  margin-bottom: 5px;
+}
+
+.modal-body .col-md-4 p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.modal-body .col-md-4 .price-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.modal-body .col-md-4 .price-container span {
+  font-size: 1.1rem;
+}
+
+.modal-body .col-md-4 hr {
+  margin: 10px 0;
+  border-color: var(--border-color);
+}
+
+.modal-body .col-md-4 .stats-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.modal-body .col-md-4 .stat-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+}
+
+.modal-body .col-md-4 .stat-item small {
+  color: var(--muted-color);
+}
+
+.modal-body .col-md-4 .prediction-container {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 0.9rem;
 }
 
 .modal-footer {
@@ -350,13 +408,17 @@ body {
 
   .modal-body {
     padding: 1rem;
-    flex-wrap: wrap; /* Updated: Allow wrapping on smaller screens */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
   }
 
   .modal-body .col-md-8,
   .modal-body .col-md-4 {
-    flex: 1 1 100%; /* Updated: Stack vertically on mobile */
-    max-width: 100%; /* Updated: Use full width on mobile */
+    flex: 1 1 100%; /* Stack vertically on mobile */
+    max-width: 100%; /* Use full width on mobile */
+  }
+
+  .modal-body .col-md-4 {
+    margin-top: 20px; /* Add spacing when stacked */
   }
 }
 
@@ -370,6 +432,10 @@ body {
   --chart-color: rgba(75, 192, 192, 0.8);
   --border-color: rgba(70, 70, 70, 0.8);
   --hover-bg: #252525;
+
+  .modal-body .col-md-4 {
+    background: #2a2a2a; /* Darker background for dark mode */
+  }
 }
 
 /* NEW: Moving Logo Carousel Section */
