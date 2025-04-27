@@ -361,21 +361,28 @@ body {
   box-shadow: var(--card-shadow);
   margin-bottom: 20px;
   padding: 10px 0;
+  position: relative;
 }
 
 .logo-track {
   display: flex;
   align-items: center;
-  width: max-content; /* 👈 Force track to expand based on images */
+  width: fit-content;
   animation: scrollLogos 25s linear infinite;
+  padding-left: 0; /* 👉 very important */
+  margin-left: 0;  /* 👉 remove margin left */
 }
 
 .logo-track img {
   height: 40px;
-  margin: 0 30px;
+  margin: 0 20px;
   object-fit: contain;
   filter: grayscale(30%);
   transition: all 0.3s ease;
+}
+
+.logo-track img:first-child {
+  margin-left: 10px; /* 👈 optional tiny space for first logo */
 }
 
 .logo-track img:hover {
@@ -388,10 +395,10 @@ body {
   100% { transform: translateX(-50%); }
 }
 
-/* Mobile Responsiveness */
+/* Mobile */
 @media (max-width: 768px) {
   .logo-track img {
     height: 30px;
-    margin: 0 15px;
+    margin: 0 10px;
   }
 }
