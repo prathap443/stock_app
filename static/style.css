@@ -1,3 +1,5 @@
+/* Your Original Styles - Kept As-Is */
+
 /* Define theme variables */
 :root {
   --bg-color: #f8f9fc;
@@ -12,6 +14,8 @@
   --hold-gradient: linear-gradient(145deg, #FF9500, #CC4D00);
   --sell-gradient: linear-gradient(145deg, #FF3B30, #A61C1C);
 }
+
+/* (Rest of your original styles... not repeating here to save space) */
 
 /* Body */
 body {
@@ -345,4 +349,49 @@ body {
   --chart-color: rgba(75, 192, 192, 0.8);
   --border-color: rgba(70, 70, 70, 0.8);
   --hover-bg: #252525;
+}
+
+
+/* NEW: Moving Logo Carousel Section */
+.logo-carousel {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+  padding: 12px 0;
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  margin-bottom: 20px;
+}
+
+.logo-track {
+  display: inline-flex;
+  align-items: center;
+  animation: scrollLogos 25s linear infinite;
+}
+
+.logo-track img {
+  height: 40px;
+  margin: 0 25px;
+  object-fit: contain;
+  filter: grayscale(30%);
+  transition: all 0.3s ease;
+}
+
+.logo-track img:hover {
+  filter: none;
+  transform: scale(1.1);
+}
+
+@keyframes scrollLogos {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Mobile Responsive Adjustment */
+@media (max-width: 768px) {
+  .logo-track img {
+    height: 30px;
+    margin: 0 15px;
+  }
 }
