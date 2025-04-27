@@ -318,19 +318,23 @@ body {
   padding: 1.25rem 1.5rem;
 }
 
+/* Corrected Modal Body Layout */
 .modal-body {
   padding: 1.5rem;
-  display: flex; /* Enhanced: Use flexbox for layout */
-  flex-wrap: wrap;
-  gap: 20px; /* Enhanced: Add spacing between chart and details */
+  display: flex;
+  flex-wrap: nowrap; /* Updated: Prevent wrapping by default */
+  gap: 20px;
+  align-items: flex-start; /* Updated: Align items at the top */
 }
 
 .modal-body .col-md-8 {
-  flex: 1 1 60%; /* Enhanced: Chart section takes 60% of space */
+  flex: 2; /* Updated: Chart section takes more space */
+  min-width: 0; /* Updated: Prevent overflow */
 }
 
 .modal-body .col-md-4 {
-  flex: 1 1 35%; /* Enhanced: Statistics section takes 35% of space */
+  flex: 1; /* Updated: Statistics section takes less space */
+  max-width: 320px; /* Updated: Cap the width of the stats section */
 }
 
 .modal-footer {
@@ -346,12 +350,13 @@ body {
 
   .modal-body {
     padding: 1rem;
+    flex-wrap: wrap; /* Updated: Allow wrapping on smaller screens */
   }
 
-  /* Ensure modal sections stack on smaller screens */
   .modal-body .col-md-8,
   .modal-body .col-md-4 {
-    flex: 1 1 100%; /* Stack vertically on mobile */
+    flex: 1 1 100%; /* Updated: Stack vertically on mobile */
+    max-width: 100%; /* Updated: Use full width on mobile */
   }
 }
 
