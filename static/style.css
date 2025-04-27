@@ -322,21 +322,27 @@ body {
 .modal-body {
   padding: 1.5rem;
   display: flex;
-  flex-direction: row; /* Ensure row layout */
-  flex-wrap: nowrap; /* Prevent wrapping by default */
+  flex-direction: column; /* Stack chart and news vertically */
   gap: 20px;
-  align-items: flex-start; /* Align items at the top */
+}
+
+.modal-body .row:first-child {
+  display: flex;
+  flex-direction: row; /* Chart and stats side by side */
+  flex-wrap: nowrap;
+  gap: 20px;
+  align-items: flex-start;
 }
 
 .modal-body .col-md-8 {
-  flex: 3; /* Chart takes more space */
+  flex: 4; /* Chart takes more space */
   min-width: 0; /* Prevent overflow */
-  max-width: 70%; /* Cap chart width to leave space for stats */
+  max-width: 75%; /* Cap chart width to leave space for stats */
 }
 
 .modal-body .col-md-4 {
   flex: 1; /* Stats takes less space */
-  max-width: 300px; /* Cap the width of the stats section */
+  max-width: 250px; /* Reduced width for stats to make chart wider */
   background: #f8f9fa; /* Light background for card-like appearance */
   border-radius: 8px;
   padding: 15px;
@@ -395,6 +401,35 @@ body {
   font-size: 0.9rem;
 }
 
+/* News Section */
+.modal-body .news-container {
+  margin-top: 20px;
+}
+
+.modal-body .news-container .news-item {
+  margin-bottom: 10px;
+}
+
+.modal-body .news-container .news-item h6 {
+  font-size: 1rem;
+  margin-bottom: 5px;
+}
+
+.modal-body .news-container .news-item p {
+  font-size: 0.85rem;
+  color: var(--muted-color);
+  margin: 0;
+}
+
+.modal-body .news-container .news-item a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.modal-body .news-container .news-item a:hover {
+  text-decoration: underline;
+}
+
 .modal-footer {
   border-top: 1px solid var(--border-color);
   padding: 1.25rem 1.5rem;
@@ -406,8 +441,7 @@ body {
     grid-template-columns: 1fr;
   }
 
-  .modal-body {
-    padding: 1rem;
+  .modal-body .row:first-child {
     flex-wrap: wrap; /* Allow wrapping on smaller screens */
   }
 
