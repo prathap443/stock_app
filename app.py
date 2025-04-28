@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request, send_from_directory
+from flask import Flask, render_template, jsonify, request, send_from_directory, redirect, session, url_for
 import requests
 import json
 import os
@@ -12,6 +12,15 @@ import numpy as np
 import pandas as pd
 from textblob import TextBlob  # For basic sentiment analysis
 import ta  # For technical indicators (RSI, MACD, etc.)
+
+# Initialize Flask app
+app = Flask(__name__)
+app.secret_key = "your_secret_key_here"  # Replace with a secure secret key for sessions
+
+# Google OAuth details
+GOOGLE_CLIENT_ID = "534755939275-0g4f0ih1a9n7fl5mao1f418oamh614r2.apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET = "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"
+GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
 
 # Load pre-trained model and label encoder
 model = joblib.load("models/stock_predictor.pkl")
@@ -28,9 +37,6 @@ FEATURE_COLUMNS = [
 logging.basicConfig(level=logging.INFO, 
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger('stock_analysis_webapp')
-
-# Initialize Flask app
-app = Flask(__name__)
 
 # Create directories
 os.makedirs('data', exist_ok=True)
@@ -689,8 +695,66 @@ def analyze_all_stocks():
 
 @app.route('/')
 def index():
-    """Serve the main dashboard page"""
-    return render_template('index.html')
+    """Serve the main dashboard page if authenticated, otherwise prompt for login"""
+    user_info = session.get('user')
+    if user_info:
+        return render_template('index.html', user_name=user_info.get('name', 'User'))
+    return '<h3>Please log in to access the Stock Analytics Dashboard</h3><br><a href="/login">Login with Google</a>'
+
+@app.route('/login')
+def login():
+    """Initiate Google OAuth login"""
+    discovery_doc = requests.get(GOOGLE_DISCOVERY_URL).json()
+    authorization_endpoint = discovery_doc["authorization_endpoint"]
+
+    request_uri = f"{authorization_endpoint}?response_type=code&client_id={GOOGLE_CLIENT_ID}&redirect_uri=http://localhost:5000/callback&scope=openid%20email%20profile"
+    return redirect(request_uri)
+
+@app.route('/callback')
+def callback():
+    """Handle Google OAuth callback"""
+    code = request.args.get('code')
+    if not code:
+        return jsonify({"error": "No authorization code provided"}), 400
+
+    try:
+        discovery_doc = requests.get(GOOGLE_DISCOVERY_URL).json()
+        token_endpoint = discovery_doc["token_endpoint"]
+
+        token_response = requests.post(
+            token_endpoint,
+            data={
+                "code": code,
+                "client_id": GOOGLE_CLIENT_ID,
+                "client_secret": GOOGLE_CLIENT_SECRET,
+                "redirect_uri": "http://localhost:5000/callback",
+                "grant_type": "authorization_code",
+            }
+        )
+        token_response.raise_for_status()
+        token_json = token_response.json()
+
+        if "access_token" not in token_json:
+            return jsonify({"error": "Failed to obtain access token"}), 400
+
+        userinfo_endpoint = discovery_doc["userinfo_endpoint"]
+        userinfo_response = requests.get(
+            userinfo_endpoint,
+            headers={"Authorization": f"Bearer {token_json['access_token']}"}
+        )
+        userinfo_response.raise_for_status()
+
+        session['user'] = userinfo_response.json()
+        return redirect('/')
+    except Exception as e:
+        logger.error(f"Error in OAuth callback: {str(e)}")
+        return jsonify({"error": f"Authentication failed: {str(e)}"}), 500
+
+@app.route('/logout')
+def logout():
+    """Clear session and log out"""
+    session.clear()
+    return redirect('/')
 
 @app.route('/api/stocks')
 def api_stocks():
