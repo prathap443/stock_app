@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="/static/style.css" />
   <link rel="icon" href="/static/favicon.ico" type="image/x-icon" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
   <div class="container my-4">
@@ -20,6 +21,23 @@
       <button class="btn btn-outline-secondary theme-toggle" onclick="toggleTheme()">
         <span class="theme-icon">🌓</span> Toggle Theme
       </button>
+    </div>
+
+    <!-- Google Sign-In Section -->
+    <div class="mb-4 text-center">
+      <div id="g_id_onload"
+           data-client_id="534755939275-0g4f0ih1a9n7fl5mao1f418oamh614r2.apps.googleusercontent.com"
+           data-login_uri="http://localhost:5000/callback"
+           data-auto_prompt="false">
+      </div>
+      <div class="g_id_signin"
+           data-type="standard"
+           data-size="large"
+           data-theme="outline"
+           data-text="sign_in_with"
+           data-shape="rectangular"
+           data-logo_alignment="left">
+      </div>
     </div>
 
     <div class="row text-center mb-3">
@@ -51,6 +69,23 @@
     <!-- Moving Logos Carousel -->
     <div class="logo-carousel my-4">
       <div class="logo-track">
+        <img src="/static/logos/apple.png" alt="Apple">
+        <img src="/static/logos/google.png" alt="Google">
+        <img src="/static/logos/tesla.png" alt="Tesla">
+        <img src="/static/logos/nvidia.png" alt="Nvidia">
+        <img src="/static/logos/meta.png" alt="Meta">
+        <img src="/static/logos/amazon.png" alt="Amazon">
+        <img src="/static/logos/intel.png" alt="Intel">
+        <img src="/static/logos/amd.png" alt="AMD">
+        <img src="/static/logos/netflix.png" alt="Netflix">
+        <img src="/static/logos/google.png" alt="Google" />
+        <img src="/static/logos/tesla.png" alt="Tesla" />
+        <img src="/static/logos/nvidia.png" alt="Nvidia" />
+        <img src="/static/logos/meta.png" alt="Meta" />
+        <img src="/static/logos/amazon.png" alt="Amazon" />
+        <img src="/static/logos/intel.png" alt="Intel" />
+        <img src="/static/logos/amd.png" alt="AMD" />
+        <img src="/static/logos/netflix.png" alt="Netflix" />
         <img src="/static/logos/apple.png" alt="Apple">
         <img src="/static/logos/google.png" alt="Google">
         <img src="/static/logos/tesla.png" alt="Tesla">
