@@ -695,11 +695,11 @@ def analyze_all_stocks():
 
 @app.route('/')
 def index():
-    """Serve the main dashboard page if authenticated, otherwise prompt for login"""
     user_info = session.get('user')
     if user_info:
         return render_template('index.html', user_name=user_info.get('name', 'User'))
-    return '<h3>Please log in to access the Stock Analytics Dashboard</h3><br><a href="/login">Login with Google</a>'
+    return render_template('login.html')
+
 
 @app.route('/login')
 def login():
