@@ -711,45 +711,73 @@ def login():
 
     return redirect(request_uri)
 
-@app.route('/callback')
+@app.route('/callback', methods=["GET", "POST"])
 def callback():
-    """Handle Google OAuth callback"""
-    code = request.args.get('code')
-    if not code:
-        return jsonify({"error": "No authorization code provided"}), 400
+    if request.method == "POST":
+        # If it is a POST request, it came from Google Identity Services
+        token = request.form.get('credential')  # Google One Tap sends a form with 'credential'
+        if not token:
+            return jsonify({"error": "Missing credential token"}), 400
 
-    try:
-        discovery_doc = requests.get(GOOGLE_DISCOVERY_URL).json()
-        token_endpoint = discovery_doc["token_endpoint"]
+        # Now decode the token (JWT) to get user info
+        from google.oauth2 import id_token
+        from google.auth.transport import requests as grequests
 
-        token_response = requests.post(
-            token_endpoint,
-            data={
-                "code": code,
-                "client_id": GOOGLE_CLIENT_ID,
-                "client_secret": GOOGLE_CLIENT_SECRET,
-                "redirect_uri": "https://www.pratstockprediction.co.uk/callback",
-                "grant_type": "authorization_code",
+        try:
+            idinfo = id_token.verify_oauth2_token(
+                token,
+                grequests.Request(),
+                GOOGLE_CLIENT_ID
+            )
+            # idinfo contains user information like email, name
+            session['user'] = {
+                "name": idinfo.get('name'),
+                "email": idinfo.get('email'),
+                "picture": idinfo.get('picture')
             }
-        )
-        token_response.raise_for_status()
-        token_json = token_response.json()
+            return redirect('/')
+        except Exception as e:
+            logger.error(f"Error verifying ID token: {str(e)}")
+            return jsonify({"error": "Invalid token"}), 400
 
-        if "access_token" not in token_json:
-            return jsonify({"error": "Failed to obtain access token"}), 400
+    else:
+        # Handle your old GET-based flow (OAuth 2 code exchange)
+        code = request.args.get('code')
+        if not code:
+            return jsonify({"error": "No authorization code provided"}), 400
+        try:
+            discovery_doc = requests.get(GOOGLE_DISCOVERY_URL).json()
+            token_endpoint = discovery_doc["token_endpoint"]
 
-        userinfo_endpoint = discovery_doc["userinfo_endpoint"]
-        userinfo_response = requests.get(
-            userinfo_endpoint,
-            headers={"Authorization": f"Bearer {token_json['access_token']}"}
-        )
-        userinfo_response.raise_for_status()
+            token_response = requests.post(
+                token_endpoint,
+                data={
+                    "code": code,
+                    "client_id": GOOGLE_CLIENT_ID,
+                    "client_secret": GOOGLE_CLIENT_SECRET,
+                    "redirect_uri": "https://www.pratstockprediction.co.uk/callback",
+                    "grant_type": "authorization_code",
+                }
+            )
+            token_response.raise_for_status()
+            token_json = token_response.json()
 
-        session['user'] = userinfo_response.json()
-        return redirect('/')
-    except Exception as e:
-        logger.error(f"Error in OAuth callback: {str(e)}")
-        return jsonify({"error": f"Authentication failed: {str(e)}"}), 500
+            if "access_token" not in token_json:
+                return jsonify({"error": "Failed to obtain access token"}), 400
+
+            userinfo_endpoint = discovery_doc["userinfo_endpoint"]
+            userinfo_response = requests.get(
+                userinfo_endpoint,
+                headers={"Authorization": f"Bearer {token_json['access_token']}"}
+            )
+            userinfo_response.raise_for_status()
+
+            session['user'] = userinfo_response.json()
+            return redirect('/')
+        except Exception as e:
+            logger.error(f"Error in OAuth callback: {str(e)}")
+            return jsonify({"error": f"Authentication failed: {str(e)}"}), 500
+
 
 @app.route('/logout')
 def logout():
