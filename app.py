@@ -707,7 +707,8 @@ def login():
     discovery_doc = requests.get(GOOGLE_DISCOVERY_URL).json()
     authorization_endpoint = discovery_doc["authorization_endpoint"]
 
-    request_uri = f"{authorization_endpoint}?response_type=code&client_id={GOOGLE_CLIENT_ID}&redirect_uri=http://localhost:5000/callback&scope=openid%20email%20profile"
+    request_uri = f"{authorization_endpoint}?response_type=code&client_id={GOOGLE_CLIENT_ID}&redirect_uri=https://www.pratstockprediction.co.uk/callback&scope=openid%20email%20profile"
+
     return redirect(request_uri)
 
 @app.route('/callback')
