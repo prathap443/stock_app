@@ -1,54 +1,32 @@
-body {
+body, html {
     margin: 0;
     padding: 0;
-    background-image: url('/static/stock_background.jpg'); /* Add your stock image */
+    height: 100%;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .login-background {
+    background: url('https://images.unsplash.com/photo-1611974789855-9c2a0a6c8b09?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80') no-repeat center center;
     background-size: cover;
-    background-position: center;
-    font-family: 'Arial', sans-serif;
-}
-
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.8);
-}
-
-.logo {
-    font-weight: bold;
-    font-size: 24px;
-}
-
-.nav-links a {
-    margin: 0 10px;
-    text-decoration: none;
-    color: #333;
-}
-
-.login-container {
-    height: 80vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.login-card {
+    height: calc(100vh - 80px);
+  }
+  
+  .login-card {
     background: rgba(255, 255, 255, 0.95);
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
-    text-align: center;
-    animation: fadeIn 1.5s ease-in;
-}
-
-footer {
-    text-align: center;
-    margin-top: 20px;
-    padding: 10px;
-    color: #777;
-}
-
-@keyframes fadeIn {
-    0% { opacity: 0; transform: translateY(20px); }
-    100% { opacity: 1; transform: translateY(0); }
-}
+    max-width: 400px;
+    width: 100%;
+  }
+  
+  h1 {
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+  
+  p {
+    color: #555;
+  }
+  
+  footer {
+    font-size: 0.9rem;
+  }
+  
