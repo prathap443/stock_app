@@ -395,15 +395,22 @@
           }]
         },
         options: {
+          interaction: {
+            mode: 'nearest',
+            intersect: false
+          },
           responsive: true,
+          maintainAspectRatio: false,
           plugins: {
             legend: { display: false },
             tooltip: {
-              mode: 'index',
-              intersect: false,
+              enabled: true,
               callbacks: {
                 label: function(context) {
-                  return `$${context.raw.toFixed(2)}`;
+                  return `$${context.raw.toFixed(3)}`;
+                },
+                title: function(context) {
+                  return context[0].label;
                 }
               }
             }
@@ -479,7 +486,7 @@
                                          data.recommendation === 'SELL' ? 'prediction-sell' : 
                                          'prediction-hold'}">${data.recommendation}</div>
           <div class="prediction-details">
-            <div class="${trendColor}">${trendIcon} ${Math.abs(data.percent_change_today).toFixed(2)}% today</div>
+            <div class="${trendColor_blocks}">${trendIcon} ${Math.abs(data.percent_change_today).toFixed(2)}% today</div>
             <div class="technical mt-1">
               <span>RSI: ${data.technical_indicators.rsi}</span> | 
               <span>MACD: ${data.technical_indicators.macd}</span>
@@ -520,11 +527,25 @@
           }]
         },
         options: {
+          interaction: {
+            mode: 'nearest',
+            intersect: false
+          },
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
             legend: { display: false },
-            tooltip: { enabled: false }
+            tooltip: {
+              enabled: true,
+              callbacks: {
+                label: function(context) {
+                  return `$${context.raw.toFixed(2)}`;
+                },
+                title: function(context) {
+                  return context[0].label;
+                }
+              }
+            }
           },
           scales: {
             x: { display: false },
