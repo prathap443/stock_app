@@ -1,4 +1,4 @@
-/* Define theme variables */
+/* === Root Theme Variables === */
 :root {
   --bg-color: #f8f9fc;
   --card-bg: #ffffff;
@@ -13,7 +13,23 @@
   --sell-gradient: linear-gradient(145deg, #FF3B30, #A61C1C);
 }
 
-/* Body */
+/* === Dark Theme Overrides === */
+[data-theme="dark"] {
+  --bg-color: #121212;
+  --card-bg: #1e1e1e;
+  --text-color: #f0f0f0;
+  --muted-color: #aaa;
+  --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  --chart-color: rgba(75, 192, 192, 0.8);
+  --border-color: rgba(70, 70, 70, 0.8);
+  --hover-bg: #252525;
+
+  .modal-body .col-md-4 {
+    background: #2a2a2a; /* Darker background for dark mode */
+  }
+}
+
+/* === Body === */
 body {
   background: var(--bg-color);
   color: var(--text-color);
@@ -21,7 +37,7 @@ body {
   transition: background 0.3s, color 0.3s;
 }
 
-/* Fade-in animation */
+/* === Fade-in Animation === */
 .fade-in {
   animation: fadeIn 0.6s ease-in-out;
 }
@@ -31,7 +47,7 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* NEW: Chart fade-in animation inside modal */
+/* === Chart Fade-in Animation Inside Modal === */
 .fade-in-chart {
   animation: fadeInChart 0.6s ease forwards;
 }
@@ -47,12 +63,12 @@ body {
   }
 }
 
-/* Header */
+/* === Header === */
 .display-5 {
   font-weight: 600;
 }
 
-/* Theme Toggle */
+/* === Theme Toggle === */
 .theme-toggle {
   border-radius: 12px;
   padding: 8px 16px;
@@ -74,7 +90,7 @@ body {
   filter: drop-shadow(0 0 2px rgba(255,255,255,0.6));
 }
 
-/* Logout Button */
+/* === Logout Button === */
 .logout-button a {
     background: #ff4d4d;
     color: white;
@@ -89,7 +105,7 @@ body {
     background: #e60000;
 }
 
-/* Top Right Buttons */
+/* === Top Right Buttons === */
 .top-right-buttons {
     display: flex;
     flex-direction: column;
@@ -100,7 +116,7 @@ body {
     right: 30px;
 }
 
-/* Optional: adjust layout on smaller screens */
+/* === Adjust Top Right Buttons on Smaller Screens === */
 @media screen and (max-width: 768px) {
     .top-right-buttons {
         position: static;
@@ -117,7 +133,7 @@ body {
     }
 }
 
-/* Recommendation Boxes */
+/* === Recommendation Boxes === */
 .recommendation-box {
   border-radius: 12px;
   backdrop-filter: blur(10px);
@@ -162,7 +178,7 @@ body {
   border: 2px solid white;
 }
 
-/* Search and Filters */
+/* === Search and Filters === */
 .search-container {
   position: relative;
 }
@@ -197,7 +213,7 @@ body {
   font-size: 1.1rem;
 }
 
-/* Stock Cards */
+/* === Stock Cards === */
 .stock-card {
   background: var(--card-bg);
   border-radius: 16px;
@@ -217,7 +233,7 @@ body {
   box-shadow: 0 15px 30px rgba(75, 192, 192, 0.4);
 }
 
-/* Footer hover */
+/* === Footer Hover === */
 .stock-card .card-footer:hover {
   background-color: var(--hover-bg);
   text-decoration: underline;
@@ -259,7 +275,7 @@ body {
   background-color: #FF3B30 !important;
 }
 
-/* Card Body */
+/* === Card Body === */
 .card-body {
   padding: 15px;
   flex-grow: 1;
@@ -285,7 +301,7 @@ body {
   background-color: rgba(0, 0, 0, 0.05);
 }
 
-/* Chart inside home page cards */
+/* === Chart Inside Home Page Cards === */
 .chart-container {
   margin: 10px 0;
   height: 100px; /* smaller for tiles */
@@ -298,13 +314,15 @@ body {
   height: 100% !important;
 }
 
-/* Chart inside Modal (View Details) */
+/* === Chart Inside Modal (View Details) === */
 .modal .chart-container {
   margin: 10px 0 20px 0;
   height: 400px; /* Adjusted height to better fit the layout */
   width: 100%;
   max-width: 100%; /* Ensure it uses full width */
   position: relative;
+  overflow: visible;
+  pointer-events: auto;
 }
 
 .modal .chart-container canvas {
@@ -316,7 +334,7 @@ body {
   margin: 0 auto;
 }
 
-/* Sentiment */
+/* === Sentiment === */
 .sentiment-row {
   display: flex;
   justify-content: space-between;
@@ -328,7 +346,7 @@ body {
   color: var(--muted-color);
 }
 
-/* Card Footer */
+/* === Card Footer === */
 .card-footer {
   padding: 12px 15px;
   background-color: rgba(0, 0, 0, 0.02);
@@ -352,7 +370,7 @@ body {
   font-weight: 500;
 }
 
-/* Stock Modal */
+/* === Stock Modal === */
 .modal-content {
   background: var(--card-bg);
   color: var(--text-color);
@@ -360,9 +378,10 @@ body {
   border: none;
   box-shadow: var(--card-shadow);
   width: 100%;
+  overflow: visible !important;
 }
 
-/* Adjust modal width for larger screens */
+/* === Adjust Modal Width for Larger Screens === */
 .modal-dialog {
   max-width: 98%; /* Use almost the full screen width */
   margin: 0.5rem auto; /* Further reduced margin to maximize width */
@@ -375,7 +394,7 @@ body {
   }
 }
 
-/* Ensure modal body uses full width with minimal padding */
+/* === Modal Body === */
 .modal-body {
   padding: 0.5rem; /* Further reduced padding */
   display: flex;
@@ -461,7 +480,7 @@ body {
   font-size: 0.9rem;
 }
 
-/* News Section */
+/* === News Section === */
 .modal-body .news-container {
   margin-top: 20px;
   width: 100%; /* Ensure news section takes full width */
@@ -497,21 +516,24 @@ body {
   padding: 0.5rem;
 }
 
-/* Chart Close Button */
+/* === Chart Modal Close Button === */
 .chart-close-btn {
   color: white;
   font-size: 28px;
   font-weight: bold;
-  background-color: transparent;
+  background-color: rgba(255, 255, 255, 0.1);
   border: none;
+  border-radius: 50%;
+  padding: 6px 10px;
   cursor: pointer;
+  transition: background 0.3s;
 }
 
-.dark-mode .chart-close-btn {
-  color: #f0f0f0; /* brighter close button in dark mode */
+.chart-close-btn:hover {
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
-/* Responsive */
+/* === Responsive === */
 @media (max-width: 768px) {
   .stats-grid {
     grid-template-columns: 1fr;
@@ -532,23 +554,7 @@ body {
   }
 }
 
-/* Dark Mode */
-[data-theme="dark"] {
-  --bg-color: #121212;
-  --card-bg: #1e1e1e;
-  --text-color: #f0f0f0;
-  --muted-color: #aaa;
-  --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-  --chart-color: rgba(75, 192, 192, 0.8);
-  --border-color: rgba(70, 70, 70, 0.8);
-  --hover-bg: #252525;
-
-  .modal-body .col-md-4 {
-    background: #2a2a2a; /* Darker background for dark mode */
-  }
-}
-
-/* NEW: Moving Logo Carousel Section */
+/* === Logo Carousel === */
 .logo-carousel {
   overflow: hidden;
   width: 100%;
@@ -565,8 +571,8 @@ body {
   align-items: center;
   width: fit-content;
   animation: scrollLogos 25s linear infinite;
-  padding-left: 0; /* 👉 very important */
-  margin-left: 0;  /* 👉 remove margin left */
+  padding-left: 0; /* very important */
+  margin-left: 0;  /* remove margin left */
 }
 
 .logo-track img {
@@ -578,7 +584,7 @@ body {
 }
 
 .logo-track img:first-child {
-  margin-left: 10px; /* 👈 optional tiny space for first logo */
+  margin-left: 10px; /* optional tiny space for first logo */
 }
 
 .logo-track img:hover {
@@ -586,15 +592,8 @@ body {
   transform: scale(1.1);
 }
 
-.logo-strip img, 
-.logo-strip svg {
-  filter: brightness(1.5) drop-shadow(0 0 2px rgba(255,255,255,0.2));
-  transition: filter 0.3s ease;
-}
-
-.dark-mode .logo-strip img, 
-.dark-mode .logo-strip svg {
-  filter: brightness(2) drop-shadow(0 0 2px rgba(255,255,255,0.3));
+[data-theme="dark"] .logo-track img {
+  filter: brightness(1.8) invert(1) drop-shadow(0 0 2px rgba(255,255,255,0.4));
 }
 
 @keyframes scrollLogos {
@@ -602,7 +601,7 @@ body {
   100% { transform: translateX(-50%); }
 }
 
-/* Mobile */
+/* === Mobile === */
 @media (max-width: 768px) {
   .logo-track img {
     height: 30px;
