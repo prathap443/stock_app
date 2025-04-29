@@ -70,6 +70,10 @@ body {
   font-size: 1.1rem;
 }
 
+.toggle-theme-btn img, .toggle-theme-btn svg {
+  filter: drop-shadow(0 0 2px rgba(255,255,255,0.6));
+}
+
 /* Logout Button */
 .logout-button a {
     background: #ff4d4d;
@@ -433,7 +437,7 @@ body {
   border-color: var(--border-color);
 }
 
-.modal-body .cl-md-4 .stats-grid {
+.modal-body .col-md-4 .stats-grid {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -491,6 +495,20 @@ body {
 .modal-footer {
   border-top: 1px solid var(--border-color);
   padding: 0.5rem;
+}
+
+/* Chart Close Button */
+.chart-close-btn {
+  color: white;
+  font-size: 28px;
+  font-weight: bold;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.dark-mode .chart-close-btn {
+  color: #f0f0f0; /* brighter close button in dark mode */
 }
 
 /* Responsive */
@@ -566,6 +584,17 @@ body {
 .logo-track img:hover {
   filter: none;
   transform: scale(1.1);
+}
+
+.logo-strip img, 
+.logo-strip svg {
+  filter: brightness(1.5) drop-shadow(0 0 2px rgba(255,255,255,0.2));
+  transition: filter 0.3s ease;
+}
+
+.dark-mode .logo-strip img, 
+.dark-mode .logo-strip svg {
+  filter: brightness(2) drop-shadow(0 0 2px rgba(255,255,255,0.3));
 }
 
 @keyframes scrollLogos {
