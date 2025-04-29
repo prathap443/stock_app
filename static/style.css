@@ -71,12 +71,6 @@ body {
 }
 
 /* Logout Button */
-.logout-button {
-    position: absolute;
-    top: 20px;
-    right: 30px;
-}
-
 .logout-button a {
     background: #ff4d4d;
     color: white;
@@ -89,6 +83,34 @@ body {
 
 .logout-button a:hover {
     background: #e60000;
+}
+
+/* Top Right Buttons */
+.top-right-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    position: absolute;
+    top: 20px;
+    right: 30px;
+}
+
+/* Optional: adjust layout on smaller screens */
+@media screen and (max-width: 768px) {
+    .top-right-buttons {
+        position: static;
+        align-items: center;
+        margin: 10px auto;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .logout-button a,
+    .theme-toggle button {
+        font-size: 0.9rem;
+        padding: 8px 14px;
+    }
 }
 
 /* Recommendation Boxes */
@@ -411,7 +433,7 @@ body {
   border-color: var(--border-color);
 }
 
-.modal-body .col-md-4 .stats-grid {
+.modal-body .cl-md-4 .stats-grid {
   display: flex;
   flex-direction: column;
   gap: 8px;
