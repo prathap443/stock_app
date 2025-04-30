@@ -479,20 +479,20 @@
         }
         
         const trendColor = data.percent_change_today >= 0 ? 'text-success' : 'text-danger';
-        const trendIcon = data.percent_change_today >= 0 ? '↑' : '↓';
-        
-        predictionContainer.innerHTML = `
-          <div class="prediction-badge ${data.recommendation === 'BUY' ? 'prediction-buy' : 
-                                         data.recommendation === 'SELL' ? 'prediction-sell' : 
-                                         'prediction-hold'}">${data.recommendation}</div>
-          <div class="prediction-details">
-            <div class="${trendColor_blocks}">${trendIcon} ${Math.abs(data.percent_change_today).toFixed(2)}% today</div>
-            <div class="technical mt-1">
-              <span>RSI: ${data.technical_indicators.rsi}</span> | 
-              <span>MACD: ${data.technical_indicators.macd}</span>
-            </div>
-            <div class="small text-muted">Updated: ${data.last_updated}</div>
-          </div>`;
+const trendIcon = data.percent_change_today >= 0 ? '↑' : '↓';
+
+predictionContainer.innerHTML = `
+  <div class="prediction-badge ${data.recommendation === 'BUY' ? 'prediction-buy' : 
+                                 data.recommendation === 'SELL' ? 'prediction-sell' : 
+                                 'prediction-hold'}">${data.recommendation}</div>
+  <div class="prediction-details">
+    <div class="${trendColor}">${trendIcon} ${Math.abs(data.percent_change_today).toFixed(2)}% today</div>
+    <div class="technical mt-1">
+      <span>RSI: ${data.technical_indicators.rsi}</span> | 
+      <span>MACD: ${data.technical_indicators.macd}</span>
+    </div>
+    <div class="small text-muted">Updated: ${data.last_updated}</div>
+  </div>`;
       } catch (error) {
         document.getElementById('detailPrediction').innerText = `Error fetching live prediction: ${error}`;
       }
